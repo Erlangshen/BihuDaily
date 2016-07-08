@@ -7,5 +7,25 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-
+    <!-- 日间模式 -->
+    <style name="AppTheme.day" parent="AppTheme">
+        <item name="containerBackground">@color/white_dark</item>
+        <item name="titleColor">@color/gray_dark</item>
+        <item name="textColor">@color/gray</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <!-- <item name="selectorBtn">@drawable/navigator_list_item_day</item>
+         <item name="selectorListItem">@drawable/list_item_day</item>-->
+    </style>
+    <!-- 夜间模式 -->
+    <style name="AppTheme.night" parent="AppTheme">
+        <item name="containerBackground">@color/green_dark</item>
+        <item name="titleColor">@color/white_dark</item>
+        <item name="textColor">@color/green_light</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <!-- <item name="selectorBtn">@drawable/navigator_list_item_night</item>
+         <item name="selectorListItem">@drawable/list_item_night</item>-->
+    </style>
+    <!-- Activity主题 -->
+    <style name="activityTheme" parent="@android:style/Theme">
+    </style>
 </resources>
