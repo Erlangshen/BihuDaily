@@ -21,22 +21,13 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showShortToast("此处应该有个目录弹出");
-            }
-        });
+        BihuApplication app= (BihuApplication) getApplication();
+        app.setNightMode(!app.isNightMode());
+        if (app.isNightMode()){
+            ChangeToNight();
+        }else{
+            ChangeToDay();
+        }
+        recreate();
     }
-
-//    public void change(View view) {
-//        BihuApplication app= (BihuApplication) getApplication();
-//        app.setNightMode(!app.isNightMode());
-//        if (app.isNightMode()){
-//            ChangeToNight();
-//        }else{
-//            ChangeToDay();
-//        }
-//        recreate();
-//    }
 }

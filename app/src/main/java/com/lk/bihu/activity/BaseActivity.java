@@ -1,10 +1,10 @@
 package com.lk.bihu.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -13,7 +13,7 @@ import android.widget.Toast;
 import com.lk.bihu.BihuApplication;
 import com.lk.bihu.R;
 
-public abstract class BaseActivity extends Activity {
+public abstract class BaseActivity extends FragmentActivity {
     private BihuApplication app = null;
     private WindowManager mWindowManager = null;
     private View mNightView = null;
