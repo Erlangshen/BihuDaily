@@ -12,4 +12,11 @@
     <color name="green">#34515c</color>
     <color name="green_dark">#1e3e4a</color>
     <color name="night_mask">#90000000</color>
+
+    <color name="swipe_color_1">#00A2ED</color>
+    <color name="swipe_color_2">#99CC00</color>
+    <color name="swipe_color_3">#8ABD00</color>
+    <color name="swipe_color_4">#7CAF00</color>
+
+    <color name="swipe_background_color">#FFFFFF</color>
 </resources>
