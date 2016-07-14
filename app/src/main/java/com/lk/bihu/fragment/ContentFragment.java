@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.lk.bihu.R;
+import com.lk.bihu.adapter.BihuListAdapter;
 import com.lk.bihu.bean.Bihu;
 import com.lk.bihu.bean.Story;
 import com.lk.bihu.bean.TopStory;
@@ -29,8 +30,9 @@ public class ContentFragment extends BaseFragment {
     private ListView homeDataListView;//首页listview
     private List<TopStory> topStories;//首页广告
     private List<Story> homeStories;//首页列表
-    private List<String> data;
-    private ArrayAdapter<String> adapter;
+    private List<Story> homeStoriesCache;//首页列表
+    private BihuListAdapter bihuAdapter = null;
+    private int id = -2;
 
     @Override
     protected int getLayoutId() {
@@ -45,74 +47,65 @@ public class ContentFragment extends BaseFragment {
 
     @Override
     protected void initData() {
-        int id = getArguments().getInt("id");
-        if (-1==id){
-            new RequestAsyncTask(getActivity(), Constant.HOME_URL,"拼命加载中...", new AsyncTaskCallBack() {
-                @Override
-                public void post(String rest) {
-                    if (!TextUtils.isEmpty(rest)){
-                        try {
-                            JSONObject object=new JSONObject(rest);
-                            Bihu data = com.alibaba.fastjson.JSONObject.parseObject(object.toString(), Bihu.class);
-                            if (DateUtils.getSysTime2().equals(data.getDate())){
-                                topStories=data.getTop_stories();
-                                homeStories=data.getStories();
-                                Log.e("AAA",topStories.toString());
-                                Log.e("AAA",homeStories.toString());
-                            }else{
-                                showToast("请求数据失败");
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }else{
-                        showToast("网络错误");
-                    }
-                }
-            }).execute();
-        }
-
-        data = new ArrayList<String>();
-        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, data);
-        homeDataListView.setAdapter(adapter);
-
+        if (homeStories == null)
+            homeStories = new ArrayList<Story>();
+        if (topStories == null)
+            topStories = new ArrayList<TopStory>();
+        if (homeStoriesCache == null)
+            homeStoriesCache = new ArrayList<Story>();
+        bihuAdapter = new BihuListAdapter(getActivity(), homeStories);
+        homeDataListView.setAdapter(bihuAdapter);
+        id = getArguments().getInt("id");
+        requestData(id);
         swipeRefreshLayout.setColorSchemeResources(R.color.swipe_color_1, R.color.swipe_color_1, R.color.swipe_color_1, R.color.swipe_color_1);
         swipeRefreshLayout.setSize(SwipeRefreshLayout.DEFAULT);
-        ;
         swipeRefreshLayout.setProgressBackgroundColor(R.color.swipe_background_color);
         swipeRefreshLayout.setProgressViewEndTarget(true, 100);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        data.clear();
-                        for (int i = 0; i < 20; i++) {
-                            data.add("SwipeRefreshLayout下拉刷新" + i);
-                        }
-                        mHandler.sendEmptyMessage(1);
-                    }
-                }).start();
+                requestData(id);
             }
         });
     }
 
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case 1:
-
-                    swipeRefreshLayout.setRefreshing(false);
-                    adapter.notifyDataSetChanged();
-                    //swipeRefreshLayout.setEnabled(false);
-                    break;
-                default:
-                    break;
-            }
+    /**
+     * 请求数据
+     */
+    private void requestData(int id) {
+        if (-1 == id) {
+            new RequestAsyncTask(getActivity(), Constant.HOME_URL, new AsyncTaskCallBack() {
+                @Override
+                public void post(String rest) {
+                    if (swipeRefreshLayout.isRefreshing())
+                        swipeRefreshLayout.setRefreshing(false);
+                    if (!TextUtils.isEmpty(rest)) {
+                        try {
+                            JSONObject object = new JSONObject(rest);
+                            Bihu data = com.alibaba.fastjson.JSONObject.parseObject(object.toString(), Bihu.class);
+                            if (DateUtils.getSysTime2().equals(data.getDate())) {
+                                topStories = data.getTop_stories();
+                                homeStoriesCache.clear();
+                                homeStoriesCache.addAll(homeStories);
+                                homeStories.clear();
+                                homeStories.addAll(data.getStories());
+                                if (homeStoriesCache.size() == homeStories.size()) {
+                                    showToast("暂无更多数据");
+                                } else {
+                                    bihuAdapter.notifyDataSetChanged();
+                                }
+                            } else {
+                                showToast("请求数据失败");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        showToast("网络错误");
+                    }
+                }
+            }).execute();
         }
+    }
 
-    };
 }
