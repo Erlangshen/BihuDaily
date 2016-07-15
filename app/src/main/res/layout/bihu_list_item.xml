@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
     android:orientation="horizontal"
     android:padding="10dp">
 
@@ -12,14 +11,16 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="#111111"
+        android:textStyle="bold"
         android:textSize="15sp" />
 
     <ImageView
         android:id="@+id/itemImage"
-        android:layout_width="80dp"
-        android:layout_height="65dp"
+        android:layout_width="75dp"
+        android:layout_height="60dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="5dp"
+        android:src="@drawable/defaultcovers"
         android:scaleType="fitXY" />
 
 </LinearLayout>
