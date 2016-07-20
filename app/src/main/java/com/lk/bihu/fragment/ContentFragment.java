@@ -216,7 +216,7 @@ public class ContentFragment extends BaseFragment {
             }
         };
         timer.schedule(task,3000,3000);
-        headAdapter.notifyDataSetChanged();
+        headAdapter.setFragments(headFragments);
     }
 
     /**
