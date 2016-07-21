@@ -70,13 +70,22 @@ public class MainActivity extends BaseActivity {
             @Override
             public void post(String rest) {
                 if (!TextUtils.isEmpty(rest)) {
+                    try{
                     AllThemeMainInfo all = JSONObject.parseObject(rest.toString(), AllThemeMainInfo.class);
                     others.clear();
+                    ThemeMainInfo info=new ThemeMainInfo();
+                    info.setName("首页");
+                    info.setId(-1);
+                    others.add(info);
                     others.addAll(all.getOthers());
                     mAdapter.notifyDataSetChanged();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 } else {
                     showShortToast("网络错误");
                 }
+
             }
         }).execute();
     }
