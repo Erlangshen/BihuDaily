@@ -8,4 +8,6 @@ public class Constant {
     public static final String HOME_URL="http://news-at.zhihu.com/api/4/news/latest";
     /**菜单列表url*/
     public static final String MENU_URL="http://news-at.zhihu.com/api/4/themes";
+    /**详细内容url*/
+    public static final String CONTENT_URL="http://news-at.zhihu.com/api/4/theme/";
 }

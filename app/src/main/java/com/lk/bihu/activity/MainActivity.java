@@ -20,6 +20,7 @@ import com.lk.bihu.constant.Constant;
 import com.lk.bihu.fragment.ContentFragment;
 import com.lk.bihu.http.RequestAsyncTask;
 import com.lk.bihu.interfaces.AsyncTaskCallBack;
+import com.lk.bihu.interfaces.MenuItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,8 @@ public class MainActivity extends BaseActivity {
     private LinearLayout menuLinear;
     private List<ThemeMainInfo> others;
     private MenuAdapter mAdapter;
+    private FragmentManager manager;
+    private FragmentTransaction transaction;
 
     @Override
     protected int getLayoutId() {
@@ -49,22 +52,44 @@ public class MainActivity extends BaseActivity {
     protected void initData() {
         initMenu();
         setMenu();
-        ContentFragment fragment = new ContentFragment();
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        Bundle bundle = new Bundle();
-        bundle.putInt("id", -1);//首页
-        fragment.setArguments(bundle);
-        transaction.add(R.id.frag_ll, fragment, "home");
-        transaction.commit();
+        initContentFragment(-1,"home");
+    }
 
+    /**
+     * 加载内容Fragment
+     */
+    private void initContentFragment(int id,String fragmentTag) {
+        ContentFragment fragment = new ContentFragment();
+        manager = getSupportFragmentManager();
+        transaction = manager.beginTransaction();
+        Bundle bundle = new Bundle();
+        bundle.putInt("id", id);//首页
+        fragment.setArguments(bundle);
+        if(-1==id){
+            transaction.add(R.id.frag_ll, fragment, fragmentTag);
+        }else{
+            transaction.replace(R.id.frag_ll,fragment,fragmentTag);
+            transaction.addToBackStack(null);
+        }
+        transaction.commit();
     }
 
     //初始化侧滑菜单
     private void initMenu() {
         if (others == null)
             others = new ArrayList<ThemeMainInfo>();
-        mAdapter = new MenuAdapter(MainActivity.this, others);
+        mAdapter = new MenuAdapter(MainActivity.this, others, new MenuItemClickListener() {
+            @Override
+            public void tvClick(ThemeMainInfo info) {
+                initContentFragment(info.getId(),String.valueOf(info.getId()));
+                drawerLayout.closeDrawer(menuLinear);
+            }
+
+            @Override
+            public void addClick(ThemeMainInfo info) {
+
+            }
+        });
         menuList.setAdapter(mAdapter);
         new RequestAsyncTask(MainActivity.this, Constant.MENU_URL, new AsyncTaskCallBack() {
             @Override

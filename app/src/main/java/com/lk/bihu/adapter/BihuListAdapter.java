@@ -17,15 +17,16 @@ import com.lk.bihu.utils.ImageDownLoader;
 
 import java.util.List;
 
-public class BihuListAdapter extends BaseAdapter{
+public class BihuListAdapter extends BaseAdapter {
     private Context context;
     private List<Story> stories;
     private ImageDownLoader loader;
+    private String imageUrl;
 
     public BihuListAdapter(Context context, List<Story> stories) {
         this.context = context;
         this.stories = stories;
-        loader= BihuApplication.getApp().getImageDownLoaderInstance();
+        loader = BihuApplication.getApp().getImageDownLoaderInstance();
     }
 
     @Override
@@ -46,40 +47,43 @@ public class BihuListAdapter extends BaseAdapter{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Story story = stories.get(position);
-        Holder holder=null;
-        if (convertView==null){
-            holder=new Holder();
-            convertView= LayoutInflater.from(context).inflate(R.layout.bihu_list_item,null);
-            holder.title= (TextView) convertView.findViewById(R.id.titleTv);
-            holder.image= (ImageView) convertView.findViewById(R.id.itemImage);
+        Holder holder = null;
+        if (convertView == null) {
+            holder = new Holder();
+            convertView = LayoutInflater.from(context).inflate(R.layout.bihu_list_item, null);
+            holder.title = (TextView) convertView.findViewById(R.id.titleTv);
+            holder.image = (ImageView) convertView.findViewById(R.id.itemImage);
             convertView.setTag(holder);
-        }else{
-            holder= (Holder) convertView.getTag();
+        } else {
+            holder = (Holder) convertView.getTag();
         }
         holder.title.setText(story.getTitle());
-        final String imageUrl=story.getImages().get(0);
+        if (story.getImages() != null && story.getImages().size() > 0) {
+            imageUrl = story.getImages().get(0);
+        }
         holder.image.setTag(imageUrl);
         if (!TextUtils.isEmpty(imageUrl)) {
             holder.image.setVisibility(View.VISIBLE);
             holder.image.setImageResource(R.drawable.defaultcovers);
-            Bitmap bitmap=loader.downLoader(holder.image, new ImageDownLoader.ImageLoaderlistener() {
+            Bitmap bitmap = loader.downLoader(holder.image, new ImageDownLoader.ImageLoaderlistener() {
 
                 @Override
                 public void onImageLoader(Bitmap bitmap, ImageView imageView) {
-                    if(imageView.getTag()!=null&&imageView.getTag().equals(imageUrl)){
+                    if (imageView.getTag() != null && imageView.getTag().equals(imageUrl)) {
                         imageView.setImageBitmap(bitmap);
                     }
                 }
             });
-            if(bitmap!=null){
+            if (bitmap != null) {
                 holder.image.setImageBitmap(bitmap);
             }
-        }else{
+        } else {
             holder.image.setVisibility(View.GONE);
         }
         return convertView;
     }
-    class Holder{
+
+    class Holder {
         TextView title;
         ImageView image;
     }

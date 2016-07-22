@@ -1,6 +1,5 @@
 package com.lk.bihu.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -139,6 +138,17 @@ public class ContentFragment extends BaseFragment {
                             e.printStackTrace();
                         }
                     } else {
+                        showToast("网络错误");
+                    }
+                }
+            }).execute();
+        }else{
+            new RequestAsyncTask(getActivity(), Constant.CONTENT_URL + id, new AsyncTaskCallBack() {
+                @Override
+                public void post(String rest) {
+                    if(!TextUtils.isEmpty(rest)){
+
+                    }else{
                         showToast("网络错误");
                     }
                 }

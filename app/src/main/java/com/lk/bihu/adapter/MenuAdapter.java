@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.lk.bihu.R;
 import com.lk.bihu.bean.ThemeMainInfo;
+import com.lk.bihu.interfaces.MenuItemClickListener;
 
 import java.util.List;
 
@@ -19,10 +20,12 @@ import java.util.List;
 public class MenuAdapter extends BaseAdapter {
     private Context context;
     private List<ThemeMainInfo> others;
+    private MenuItemClickListener listener;
 
-    public MenuAdapter(Context context, List<ThemeMainInfo> others) {
+    public MenuAdapter(Context context, List<ThemeMainInfo> others,MenuItemClickListener listener) {
         this.context = context;
         this.others = others;
+        this.listener=listener;
     }
 
     @Override
@@ -42,7 +45,7 @@ public class MenuAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ThemeMainInfo info = others.get(position);
+       final  ThemeMainInfo info = others.get(position);
         Holder holder=null;
         if (convertView==null){
             holder=new Holder();
@@ -70,6 +73,18 @@ public class MenuAdapter extends BaseAdapter {
             holder.home_add.setImageResource(R.drawable.menu_add);
         }
         holder.home_tv.setText(info.getName());
+        holder.home_tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.tvClick(info);
+            }
+        });
+        holder.home_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.addClick(info);
+            }
+        });
         return convertView;
     }
     class Holder{
