@@ -60,24 +60,27 @@ public class BihuListAdapter extends BaseAdapter {
         holder.title.setText(story.getTitle());
         if (story.getImages() != null && story.getImages().size() > 0) {
             imageUrl = story.getImages().get(0);
-        }
-        holder.image.setTag(imageUrl);
-        if (!TextUtils.isEmpty(imageUrl)) {
-            holder.image.setVisibility(View.VISIBLE);
-            holder.image.setImageResource(R.drawable.defaultcovers);
-            Bitmap bitmap = loader.downLoader(holder.image, new ImageDownLoader.ImageLoaderlistener() {
+            holder.image.setTag(imageUrl);
 
-                @Override
-                public void onImageLoader(Bitmap bitmap, ImageView imageView) {
-                    if (imageView.getTag() != null && imageView.getTag().equals(imageUrl)) {
-                        imageView.setImageBitmap(bitmap);
+            if (!TextUtils.isEmpty(imageUrl)) {
+                holder.image.setVisibility(View.VISIBLE);
+                holder.image.setImageResource(R.drawable.defaultcovers);
+                Bitmap bitmap = loader.downLoader(holder.image, new ImageDownLoader.ImageLoaderlistener() {
+
+                    @Override
+                    public void onImageLoader(Bitmap bitmap, ImageView imageView) {
+                        if (imageView.getTag() != null && imageView.getTag().equals(imageUrl)) {
+                            imageView.setImageBitmap(bitmap);
+                        }
                     }
+                });
+                if (bitmap != null) {
+                    holder.image.setImageBitmap(bitmap);
                 }
-            });
-            if (bitmap != null) {
-                holder.image.setImageBitmap(bitmap);
+            } else {
+                holder.image.setVisibility(View.GONE);
             }
-        } else {
+        }else{
             holder.image.setVisibility(View.GONE);
         }
         return convertView;

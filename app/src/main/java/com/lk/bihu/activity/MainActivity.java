@@ -52,26 +52,42 @@ public class MainActivity extends BaseActivity {
     protected void initData() {
         initMenu();
         setMenu();
-        initContentFragment(-1,"home");
+        initContentFragment(-1,"-1");
     }
 
     /**
      * 加载内容Fragment
      */
-    private void initContentFragment(int id,String fragmentTag) {
+    private void initContentFragment(int id,String tag) {
         ContentFragment fragment = new ContentFragment();
         manager = getSupportFragmentManager();
         transaction = manager.beginTransaction();
         Bundle bundle = new Bundle();
         bundle.putInt("id", id);//首页
         fragment.setArguments(bundle);
-        if(-1==id){
-            transaction.add(R.id.frag_ll, fragment, fragmentTag);
-        }else{
-            transaction.replace(R.id.frag_ll,fragment,fragmentTag);
-            transaction.addToBackStack(null);
+        if (manager.getFragments()==null||manager.getFragments().size()==0){
+            transaction.add(R.id.frag_ll,fragment,tag);
+            transaction.commit();
+            return;
         }
+        if (manager.getFragments().contains(fragment)){
+            if (!(fragment instanceof ContentFragment)){
+                return;
+            }
+            if(fragment.getArguments().getInt("id")!=manager.getFragments().get(0).getArguments().getInt("id")){
+                transaction.replace(R.id.frag_ll,fragment,tag);
+            }
+            return ;
+        }
+        transaction.replace(R.id.frag_ll,fragment,tag);
         transaction.commit();
+//        if(-1==id){
+//            transaction.add(R.id.frag_ll, fragment, tag);
+//        }else{
+//            transaction.replace(R.id.frag_ll,fragment,tag);
+//            transaction.addToBackStack(null);
+//        }
+//        transaction.commit();
     }
 
     //初始化侧滑菜单
@@ -133,5 +149,14 @@ public class MainActivity extends BaseActivity {
                 drawerLayout.openDrawer(menuLinear);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(drawerLayout.isDrawerOpen(menuLinear)){
+            drawerLayout.closeDrawer(menuLinear);
+        }else {
+            super.onBackPressed();
+        }
     }
 }

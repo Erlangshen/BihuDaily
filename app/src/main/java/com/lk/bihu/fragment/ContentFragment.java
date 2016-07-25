@@ -16,7 +16,8 @@ import android.widget.TextView;
 import com.lk.bihu.R;
 import com.lk.bihu.adapter.BihuListAdapter;
 import com.lk.bihu.adapter.HeadAdapter;
-import com.lk.bihu.bean.Bihu;
+import com.lk.bihu.bean.BihuContent;
+import com.lk.bihu.bean.BihuMenu;
 import com.lk.bihu.bean.Story;
 import com.lk.bihu.bean.TopStory;
 import com.lk.bihu.constant.Constant;
@@ -112,7 +113,7 @@ public class ContentFragment extends BaseFragment {
                     if (!TextUtils.isEmpty(rest)) {
                         try {
                             JSONObject object = new JSONObject(rest);
-                            Bihu data = com.alibaba.fastjson.JSONObject.parseObject(object.toString(), Bihu.class);
+                            BihuMenu data = com.alibaba.fastjson.JSONObject.parseObject(object.toString(), BihuMenu.class);
                             if (DateUtils.getSysTime2().equals(data.getDate())) {
                                 topStories.clear();
                                 topStories.addAll(data.getTop_stories());
@@ -146,8 +147,19 @@ public class ContentFragment extends BaseFragment {
             new RequestAsyncTask(getActivity(), Constant.CONTENT_URL + id, new AsyncTaskCallBack() {
                 @Override
                 public void post(String rest) {
+                    if (swipeRefreshLayout.isRefreshing())
+                        swipeRefreshLayout.setRefreshing(false);
                     if(!TextUtils.isEmpty(rest)){
-
+                        BihuContent content = com.alibaba.fastjson.JSONObject.parseObject(rest.toString(), BihuContent.class);
+                        homeStoriesCache.clear();
+                        homeStoriesCache.addAll(homeStories);
+                        homeStories.clear();
+                        homeStories.addAll(content.getStories());
+                        if (homeStoriesCache.size() == homeStories.size()) {
+                            showToast("暂无更多数据");
+                        } else {
+                            bihuAdapter.notifyDataSetChanged();
+                        }
                     }else{
                         showToast("网络错误");
                     }
@@ -226,7 +238,7 @@ public class ContentFragment extends BaseFragment {
             }
         };
         timer.schedule(task,3000,3000);
-        headAdapter.notifyDataSetChanged();
+        headAdapter.setFragments(headFragments);
     }
 
     /**

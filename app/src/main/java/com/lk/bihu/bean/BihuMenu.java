@@ -6,7 +6,7 @@ import java.util.List;
 /**
  *返回信息实体类
  */
-public class Bihu implements Serializable{
+public class BihuMenu implements Serializable{
     private String date;
     private List<Story> stories;
     private List<TopStory> top_stories;
@@ -37,7 +37,7 @@ public class Bihu implements Serializable{
 
     @Override
     public String toString() {
-        return "Bihu{" +
+        return "BihuMenu{" +
                 "date='" + date + '\'' +
                 ", stories=" + stories +
                 ", top_stories=" + top_stories +
