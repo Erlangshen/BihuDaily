@@ -21,7 +21,6 @@ public class BihuListAdapter extends BaseAdapter {
     private Context context;
     private List<Story> stories;
     private ImageDownLoader loader;
-    private String imageUrl;
 
     public BihuListAdapter(Context context, List<Story> stories) {
         this.context = context;
@@ -59,7 +58,7 @@ public class BihuListAdapter extends BaseAdapter {
         }
         holder.title.setText(story.getTitle());
         if (story.getImages() != null && story.getImages().size() > 0) {
-            imageUrl = story.getImages().get(0);
+            final String imageUrl = story.getImages().get(0);
             holder.image.setTag(imageUrl);
 
             if (!TextUtils.isEmpty(imageUrl)) {
@@ -80,7 +79,7 @@ public class BihuListAdapter extends BaseAdapter {
             } else {
                 holder.image.setVisibility(View.GONE);
             }
-        }else{
+        } else {
             holder.image.setVisibility(View.GONE);
         }
         return convertView;

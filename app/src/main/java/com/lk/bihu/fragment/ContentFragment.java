@@ -38,7 +38,6 @@ public class ContentFragment extends BaseFragment {
     private ListView homeDataListView;//首页listview
     private List<TopStory> topStories;//首页广告
     private List<Story> homeStories;//首页列表
-    private List<Story> homeStoriesCache;//首页列表
     private BihuListAdapter bihuAdapter = null;//列表adapter
     private View headView;//头视图
     private ViewPager headVp;//头视图的轮询广告ViewPager
@@ -57,8 +56,8 @@ public class ContentFragment extends BaseFragment {
                 headVp.setCurrentItem(count % topStories.size());
         }
     };
-    private Timer timer=null;
-    private TimerTask task=null;
+    private Timer timer = null;
+    private TimerTask task = null;
 
     @Override
     protected int getLayoutId() {
@@ -77,8 +76,6 @@ public class ContentFragment extends BaseFragment {
             homeStories = new ArrayList<Story>();
         if (topStories == null)
             topStories = new ArrayList<TopStory>();
-        if (homeStoriesCache == null)
-            homeStoriesCache = new ArrayList<Story>();
         if (headFragments == null)
             headFragments = new ArrayList<BaseFragment>();
 
@@ -123,15 +120,9 @@ public class ContentFragment extends BaseFragment {
                                 } else {
                                     headLinear.setVisibility(View.GONE);
                                 }
-                                homeStoriesCache.clear();
-                                homeStoriesCache.addAll(homeStories);
                                 homeStories.clear();
                                 homeStories.addAll(data.getStories());
-                                if (homeStoriesCache.size() == homeStories.size()) {
-                                    showToast("暂无更多数据");
-                                } else {
-                                    bihuAdapter.notifyDataSetChanged();
-                                }
+                                bihuAdapter.notifyDataSetChanged();
                             } else {
                                 showToast("请求数据失败");
                             }
@@ -143,24 +134,18 @@ public class ContentFragment extends BaseFragment {
                     }
                 }
             }).execute();
-        }else{
+        } else {
             new RequestAsyncTask(getActivity(), Constant.CONTENT_URL + id, new AsyncTaskCallBack() {
                 @Override
                 public void post(String rest) {
                     if (swipeRefreshLayout.isRefreshing())
                         swipeRefreshLayout.setRefreshing(false);
-                    if(!TextUtils.isEmpty(rest)){
+                    if (!TextUtils.isEmpty(rest)) {
                         BihuContent content = com.alibaba.fastjson.JSONObject.parseObject(rest.toString(), BihuContent.class);
-                        homeStoriesCache.clear();
-                        homeStoriesCache.addAll(homeStories);
                         homeStories.clear();
                         homeStories.addAll(content.getStories());
-                        if (homeStoriesCache.size() == homeStories.size()) {
-                            showToast("暂无更多数据");
-                        } else {
-                            bihuAdapter.notifyDataSetChanged();
-                        }
-                    }else{
+                        bihuAdapter.notifyDataSetChanged();
+                    } else {
                         showToast("网络错误");
                     }
                 }
@@ -228,7 +213,7 @@ public class ContentFragment extends BaseFragment {
 
             }
         });
-        if (task!=null)
+        if (task != null)
             task.cancel();
         task = new TimerTask() {
             @Override
@@ -237,7 +222,7 @@ public class ContentFragment extends BaseFragment {
                 count++;
             }
         };
-        timer.schedule(task,3000,3000);
+        timer.schedule(task, 3000, 3000);
         headAdapter.setFragments(headFragments);
     }
 
