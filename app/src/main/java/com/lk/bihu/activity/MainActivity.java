@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -80,6 +81,7 @@ public class MainActivity extends BaseActivity {
                 return;
             }
             if (fragment.getArguments().getInt("id") != manager.getFragments().get(0).getArguments().getInt("id")) {
+                delList.clear();
                 for (int i = 1; i < manager.getFragments().size(); i++) {
                     if (manager.getFragments().get(i) instanceof ContentFragment) {
                         flag = false;
@@ -90,9 +92,14 @@ public class MainActivity extends BaseActivity {
                 //当前页面是其他页面，并且切换到其他的（比如从心理学日报切换到电影日报）
                 if (!(("-1".equals(manager.getFragments().get(0).getTag())) && flag)) {
                     for (Fragment f : delList) {
+                        manager.getFragments().remove(f);
                         transaction.remove(f);
                     }
                 }
+                transaction.commit();
+                transaction=null;
+                manager.executePendingTransactions();
+                transaction=manager.beginTransaction();
                 transaction.hide(manager.getFragments().get(0));
                 transaction.add(R.id.frag_ll, fragment, tag);
                 transaction.addToBackStack(null);
