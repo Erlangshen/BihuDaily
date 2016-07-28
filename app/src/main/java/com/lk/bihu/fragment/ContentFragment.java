@@ -58,6 +58,7 @@ public class ContentFragment extends BaseFragment {
     };
     private Timer timer = null;
     private TimerTask task = null;
+    private TextView titleTv;//标题
 
     @Override
     protected int getLayoutId() {
@@ -161,6 +162,7 @@ public class ContentFragment extends BaseFragment {
         headLinear = (LinearLayout) headView.findViewById(R.id.headLinear);
         headVp = (ViewPager) headView.findViewById(R.id.headVp);
         headTv = (TextView) headView.findViewById(R.id.headTv);
+        titleTv= (TextView) headView.findViewById(R.id.titleTv);
         headAdapter = new HeadAdapter(getFragmentManager(), headFragments);
         headVp.setAdapter(headAdapter);
         homeDataListView.addHeaderView(headView);

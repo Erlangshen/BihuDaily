@@ -41,6 +41,7 @@ public class HeadAdapter extends FragmentPagerAdapter{
             FragmentTransaction ft = fm.beginTransaction();
             for(Fragment f:this.headList){
                 ft.remove(f);
+                fm.getFragments().remove(f);
             }
             ft.commit();
             ft=null;

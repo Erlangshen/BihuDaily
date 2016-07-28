@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.lk.bihu.BihuApplication;
 import com.lk.bihu.R;
+import com.lk.bihu.utils.DeviceUtil;
 
 public abstract class BaseActivity extends FragmentActivity {
     private BihuApplication app = null;
@@ -38,6 +39,12 @@ public abstract class BaseActivity extends FragmentActivity {
         setContentView(getLayoutId());
         initView();
         initData();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        DeviceUtil.setTranslucent(BaseActivity.this);
     }
 
     @Override
