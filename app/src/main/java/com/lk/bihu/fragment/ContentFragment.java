@@ -185,9 +185,10 @@ public class ContentFragment extends BaseFragment {
             headLinear.addView(image);
 
             HeadFragment hFragment = new HeadFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString("image_url", topStories.get(i).getImage());
-            hFragment.setArguments(bundle);
+//            Bundle bundle = new Bundle();
+//            bundle.putString("image_url", topStories.get(i).getImage());
+//            hFragment.setArguments(bundle);
+            hFragment.setImageUrl(topStories.get(i).getImage());
             headFragments.add(hFragment);
         }
 

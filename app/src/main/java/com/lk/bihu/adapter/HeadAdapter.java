@@ -3,6 +3,7 @@ package com.lk.bihu.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 
 import com.lk.bihu.fragment.BaseFragment;
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  * 加载头视图的Adapter
  */
-public class HeadAdapter extends FragmentPagerAdapter{
+public class HeadAdapter extends FragmentStatePagerAdapter {
     private List<BaseFragment> headList;
     private FragmentManager fm;
     public HeadAdapter(FragmentManager fm,List<BaseFragment> headList) {

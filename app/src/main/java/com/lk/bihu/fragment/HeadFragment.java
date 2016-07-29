@@ -27,7 +27,7 @@ public class HeadFragment extends BaseFragment{
 
     @Override
     protected void initData() {
-        imageUrl= getArguments().getString("image_url");
+        imageUrl= getImageUrl();
         loader= BihuApplication.getApp().getImageDownLoaderInstance();
         image.setTag(imageUrl);
         Bitmap bitmap = loader.downLoader(image, new ImageDownLoader.ImageLoaderlistener() {
@@ -41,5 +41,13 @@ public class HeadFragment extends BaseFragment{
         if (bitmap!=null){
             image.setImageBitmap(bitmap);
         }
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
