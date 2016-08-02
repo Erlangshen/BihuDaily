@@ -7,10 +7,10 @@ import java.io.Serializable;
  */
 public class ThemeMainInfo implements Serializable{
     private int color;
-    private String thumbnail;
-    private String description;
+    private String thumbnail;//图片URL
+    private String description;//描述
     private int id;
-    private String name;
+    private String name;//标题头
 
     public int getColor() {
         return color;

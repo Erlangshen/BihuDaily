@@ -58,18 +58,21 @@ public class MainActivity extends BaseActivity {
         delList = new ArrayList<Fragment>();
         initMenu();
         setMenu();
-        initContentFragment(-1, "-1");
+        ThemeMainInfo info=new ThemeMainInfo();
+        info.setId(-1);
+        initContentFragment(info, "-1");
     }
 
     /**
      * 加载内容Fragment
      */
-    private void initContentFragment(int id, String tag) {
+    private void initContentFragment(ThemeMainInfo info, String tag) {
         ContentFragment fragment = new ContentFragment();
         manager = getSupportFragmentManager();
         transaction = manager.beginTransaction();
         Bundle bundle = new Bundle();
-        bundle.putInt("id", id);//首页
+        bundle.putSerializable("themeMainInfo",info);
+        bundle.putInt("id",info.getId());
         fragment.setArguments(bundle);
         if (manager.getFragments() == null || manager.getFragments().size() == 0) {
             transaction.add(R.id.frag_ll, fragment, tag);
@@ -120,7 +123,7 @@ public class MainActivity extends BaseActivity {
         mAdapter = new MenuAdapter(MainActivity.this, others, new MenuItemClickListener() {
             @Override
             public void tvClick(ThemeMainInfo info) {
-                initContentFragment(info.getId(), String.valueOf(info.getId()));
+                initContentFragment(info, String.valueOf(info.getId()));
                 drawerLayout.closeDrawer(menuLinear);
             }
 

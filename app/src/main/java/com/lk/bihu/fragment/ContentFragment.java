@@ -1,11 +1,13 @@
 package com.lk.bihu.fragment;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,17 +15,20 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.lk.bihu.BihuApplication;
 import com.lk.bihu.R;
 import com.lk.bihu.adapter.BihuListAdapter;
 import com.lk.bihu.adapter.HeadAdapter;
 import com.lk.bihu.bean.BihuContent;
 import com.lk.bihu.bean.BihuMenu;
 import com.lk.bihu.bean.Story;
+import com.lk.bihu.bean.ThemeMainInfo;
 import com.lk.bihu.bean.TopStory;
 import com.lk.bihu.constant.Constant;
 import com.lk.bihu.http.RequestAsyncTask;
 import com.lk.bihu.interfaces.AsyncTaskCallBack;
 import com.lk.bihu.utils.DateUtils;
+import com.lk.bihu.utils.ImageDownLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,18 +52,20 @@ public class ContentFragment extends BaseFragment {
     private int headPrePosition = 0;
     private int count = 0;
     private TextView headTv;
-    private int id = -2;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (topStories.size() > 1)
                 headVp.setCurrentItem(count % topStories.size());
+            Log.d("", "count-->" + count);
         }
     };
     private Timer timer = null;
     private TimerTask task = null;
     private TextView titleTv;//标题
+    private ImageView headIv;//除首页之外的头视图
+    private ThemeMainInfo info;
 
     @Override
     protected int getLayoutId() {
@@ -84,8 +91,8 @@ public class ContentFragment extends BaseFragment {
 
         bihuAdapter = new BihuListAdapter(getActivity(), homeStories);
         homeDataListView.setAdapter(bihuAdapter);
-        id = getArguments().getInt("id");
-        requestData(id);
+        info = (ThemeMainInfo) getArguments().getSerializable("themeMainInfo");
+        requestData(info);
         swipeRefreshLayout.setColorSchemeResources(R.color.swipe_color_1, R.color.swipe_color_1, R.color.swipe_color_1, R.color.swipe_color_1);
         swipeRefreshLayout.setSize(SwipeRefreshLayout.DEFAULT);
         swipeRefreshLayout.setProgressBackgroundColor(R.color.swipe_background_color);
@@ -93,7 +100,7 @@ public class ContentFragment extends BaseFragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                requestData(id);
+                requestData(info);
             }
         });
     }
@@ -101,7 +108,8 @@ public class ContentFragment extends BaseFragment {
     /**
      * 请求数据
      */
-    private void requestData(int id) {
+    private void requestData(final ThemeMainInfo info) {
+        int id = info.getId();
         if (-1 == id) {
             new RequestAsyncTask(getActivity(), Constant.HOME_URL, new AsyncTaskCallBack() {
                 @Override
@@ -117,7 +125,7 @@ public class ContentFragment extends BaseFragment {
                                 topStories.addAll(data.getTop_stories());
                                 if (topStories.size() > 1) {
                                     headLinear.setVisibility(View.VISIBLE);
-                                    getHeadView();
+                                    getHeadView(null);
                                 } else {
                                     headLinear.setVisibility(View.GONE);
                                 }
@@ -146,6 +154,7 @@ public class ContentFragment extends BaseFragment {
                         homeStories.clear();
                         homeStories.addAll(content.getStories());
                         bihuAdapter.notifyDataSetChanged();
+                        getHeadView(info);
                     } else {
                         showToast("网络错误");
                     }
@@ -162,7 +171,8 @@ public class ContentFragment extends BaseFragment {
         headLinear = (LinearLayout) headView.findViewById(R.id.headLinear);
         headVp = (ViewPager) headView.findViewById(R.id.headVp);
         headTv = (TextView) headView.findViewById(R.id.headTv);
-        titleTv= (TextView) headView.findViewById(R.id.titleTv);
+        titleTv = (TextView) headView.findViewById(R.id.titleTv);
+        headIv = (ImageView) headView.findViewById(R.id.headIv);
         headAdapter = new HeadAdapter(getFragmentManager(), headFragments);
         headVp.setAdapter(headAdapter);
         homeDataListView.addHeaderView(headView);
@@ -172,61 +182,86 @@ public class ContentFragment extends BaseFragment {
     /**
      * 加载或者刷新头视图
      */
-    private void getHeadView() {
-        if (headLinear.getChildCount() > 0)
-            headLinear.removeAllViews();
-        headFragments.clear();
-        for (int i = 0; i < topStories.size(); i++) {
-            ImageView image = new ImageView(getActivity());
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dip2px(6), dip2px(6));
-            params.leftMargin = dip2px(8);
-            image.setLayoutParams(params);
-            image.setImageResource(R.drawable.page);
-            headLinear.addView(image);
+    private void getHeadView(ThemeMainInfo tMi) {
+        if (tMi == null) {
+            headIv.setVisibility(View.GONE);
+            headVp.setVisibility(View.VISIBLE);
+            headLinear.setVisibility(View.VISIBLE);
 
-            HeadFragment hFragment = new HeadFragment();
-//            Bundle bundle = new Bundle();
-//            bundle.putString("image_url", topStories.get(i).getImage());
-//            hFragment.setArguments(bundle);
-            hFragment.setImageUrl(topStories.get(i).getImage());
-            headFragments.add(hFragment);
+            titleTv.setText("今日热闻");
+            if (headLinear.getChildCount() > 0)
+                headLinear.removeAllViews();
+            headFragments.clear();
+            for (int i = 0; i < topStories.size(); i++) {
+                ImageView image = new ImageView(getActivity());
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dip2px(6), dip2px(6));
+                params.leftMargin = dip2px(8);
+                image.setLayoutParams(params);
+                image.setImageResource(R.drawable.page);
+                headLinear.addView(image);
+
+                HeadFragment hFragment = new HeadFragment();
+                hFragment.setImageUrl(topStories.get(i).getImage());
+                headFragments.add(hFragment);
+            }
+
+            ImageView image = (ImageView) headLinear.getChildAt(0);
+            image.setImageResource(R.drawable.page_now);
+            headVp.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+                    if (topStories.size() > 0)
+                        headTv.setText(topStories.get(position).getTitle());
+                    ImageView image = (ImageView) headLinear.getChildAt(position);
+                    ImageView pImage = (ImageView) headLinear.getChildAt(headPrePosition);
+                    image.setImageResource(R.drawable.page_now);
+                    pImage.setImageResource(R.drawable.page);
+                    headPrePosition = position;
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+
+                }
+            });
+            if (task != null)
+                task.cancel();
+           TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    handler.sendEmptyMessage(count);
+                    count++;
+                }
+            };
+            timer.schedule(task, 3000, 3000);
+            headAdapter.setFragments(headFragments);
+        } else {
+            if (timer != null)
+                timer.cancel();
+            headVp.setVisibility(View.GONE);
+            headIv.setVisibility(View.VISIBLE);
+            headLinear.setVisibility(View.GONE);
+            ImageDownLoader loader = BihuApplication.getApp().getImageDownLoaderInstance();
+            headIv.setTag(info.getThumbnail());
+            Bitmap bitmap = loader.downLoader(headIv, new ImageDownLoader.ImageLoaderlistener() {
+                @Override
+                public void onImageLoader(Bitmap bitmap, ImageView imageView) {
+                    if (imageView.getTag() != null && imageView.getTag().equals(info.getThumbnail())) {
+                        imageView.setImageBitmap(bitmap);
+                    }
+                }
+            });
+            if (bitmap != null) {
+                headIv.setImageBitmap(bitmap);
+            }
+            titleTv.setText(tMi.getName());
+            headTv.setText(tMi.getDescription());
         }
-
-        ImageView image = (ImageView) headLinear.getChildAt(0);
-        image.setImageResource(R.drawable.page_now);
-        headVp.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (topStories.size() > 0)
-                    headTv.setText(topStories.get(position).getTitle());
-                ImageView image = (ImageView) headLinear.getChildAt(position);
-                ImageView pImage = (ImageView) headLinear.getChildAt(headPrePosition);
-                image.setImageResource(R.drawable.page_now);
-                pImage.setImageResource(R.drawable.page);
-                headPrePosition = position;
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-        if (task != null)
-            task.cancel();
-        task = new TimerTask() {
-            @Override
-            public void run() {
-                handler.sendEmptyMessage(count);
-                count++;
-            }
-        };
-        timer.schedule(task, 3000, 3000);
-        headAdapter.setFragments(headFragments);
     }
 
     /**
