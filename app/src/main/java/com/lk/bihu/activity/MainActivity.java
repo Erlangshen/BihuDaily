@@ -109,6 +109,8 @@ public class MainActivity extends BaseActivity {
                 transaction.commit();
             } else {//从其他界面回到首页
                 super.onBackPressed();
+                ContentFragment frag = (ContentFragment) manager.findFragmentByTag("-1");
+                frag.timerCallBack();
             }
             return;
         }
@@ -183,6 +185,8 @@ public class MainActivity extends BaseActivity {
             drawerLayout.closeDrawer(menuLinear);
         } else {
             super.onBackPressed();
+            ContentFragment frag = (ContentFragment) manager.findFragmentByTag("-1");
+            frag.timerCallBack();
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.lk.bihu.fragment;
 
 import android.graphics.Bitmap;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
@@ -27,6 +26,7 @@ import com.lk.bihu.bean.TopStory;
 import com.lk.bihu.constant.Constant;
 import com.lk.bihu.http.RequestAsyncTask;
 import com.lk.bihu.interfaces.AsyncTaskCallBack;
+import com.lk.bihu.interfaces.TimerCallBack;
 import com.lk.bihu.utils.DateUtils;
 import com.lk.bihu.utils.ImageDownLoader;
 
@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ContentFragment extends BaseFragment {
+public class ContentFragment extends BaseFragment implements TimerCallBack{
     private SwipeRefreshLayout swipeRefreshLayout;
     private ListView homeDataListView;//首页listview
     private List<TopStory> topStories;//首页广告
@@ -56,13 +56,15 @@ public class ContentFragment extends BaseFragment {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (topStories.size() > 1)
+            if (topStories.size() > 1) {
+                Log.e("", "count-->" + count);
+                Log.e("", "topStories.size()-->" + topStories.size());
                 headVp.setCurrentItem(count % topStories.size());
-            Log.d("", "count-->" + count);
+            }
         }
     };
-    private Timer timer = null;
-    private TimerTask task = null;
+    static Timer timer = null;
+    static TimerTask task = null;
     private TextView titleTv;//标题
     private ImageView headIv;//除首页之外的头视图
     private ThemeMainInfo info;
@@ -176,7 +178,6 @@ public class ContentFragment extends BaseFragment {
         headAdapter = new HeadAdapter(getFragmentManager(), headFragments);
         headVp.setAdapter(headAdapter);
         homeDataListView.addHeaderView(headView);
-        timer = new Timer();
     }
 
     /**
@@ -205,8 +206,6 @@ public class ContentFragment extends BaseFragment {
                 headFragments.add(hFragment);
             }
 
-            ImageView image = (ImageView) headLinear.getChildAt(0);
-            image.setImageResource(R.drawable.page_now);
             headVp.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                 @Override
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -229,20 +228,11 @@ public class ContentFragment extends BaseFragment {
 
                 }
             });
-            if (task != null)
-                task.cancel();
-           TimerTask task = new TimerTask() {
-                @Override
-                public void run() {
-                    handler.sendEmptyMessage(count);
-                    count++;
-                }
-            };
-            timer.schedule(task, 3000, 3000);
             headAdapter.setFragments(headFragments);
+            stopTimer();
+            startTimer();
         } else {
-            if (timer != null)
-                timer.cancel();
+            stopTimer();
             headVp.setVisibility(View.GONE);
             headIv.setVisibility(View.VISIBLE);
             headLinear.setVisibility(View.GONE);
@@ -265,10 +255,52 @@ public class ContentFragment extends BaseFragment {
     }
 
     /**
+     * 开始Timer任务
+     */
+    public void startTimer() {
+        if (timer == null) {
+            timer = new Timer();
+        }
+        if (task == null) {
+            task = new TimerTask() {
+                @Override
+                public void run() {
+                    handler.sendEmptyMessage(count);
+                    count++;
+                }
+            };
+        }
+        if (timer != null && task != null) {
+            timer.schedule(task, 3000, 3000);
+        }
+    }
+
+    /**
+     * 暂停Timer任务
+     */
+    public void stopTimer() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+        if (task != null) {
+            task.cancel();
+            task = null;
+        }
+        count = 0;
+    }
+
+    /**
      * dp转成px
      */
     public int dip2px(float dipValue) {
         float scale = getResources().getDisplayMetrics().density;
         return (int) (dipValue * scale + 0.5f);
+    }
+
+    @Override
+    public void timerCallBack() {
+        stopTimer();
+        startTimer();
     }
 }
