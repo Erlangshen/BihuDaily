@@ -39,6 +39,7 @@ public class MainActivity extends BaseActivity {
     private FragmentTransaction transaction;
     private boolean flag = true;//没有添加其他页面-true；添加除首页之外的任何其他页面-false
     private List<Fragment> delList;
+    private ContentFragment cacheFragment;//判断当前页面的fragment和将要添加的fragment是否为同一个
 
     @Override
     protected int getLayoutId() {
@@ -58,7 +59,8 @@ public class MainActivity extends BaseActivity {
         delList = new ArrayList<Fragment>();
         initMenu();
         setMenu();
-        ThemeMainInfo info=new ThemeMainInfo();
+        cacheFragment = new ContentFragment();
+        ThemeMainInfo info = new ThemeMainInfo();
         info.setId(-1);
         initContentFragment(info, "-1");
     }
@@ -71,13 +73,20 @@ public class MainActivity extends BaseActivity {
         manager = getSupportFragmentManager();
         transaction = manager.beginTransaction();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("themeMainInfo",info);
-        bundle.putInt("id",info.getId());
+        bundle.putSerializable("themeMainInfo", info);
+        bundle.putInt("id", info.getId());
         fragment.setArguments(bundle);
         if (manager.getFragments() == null || manager.getFragments().size() == 0) {
             transaction.add(R.id.frag_ll, fragment, tag);
             transaction.commit();
+            cacheFragment = fragment;
             return;
+        }else{//得到当前显示的fragment
+            for(Fragment fr:manager.getFragments()){
+                if(fr!=null&&fr.isVisible()&&(fr instanceof ContentFragment)){
+                    cacheFragment= (ContentFragment) fr;
+                }
+            }
         }
         if (!manager.getFragments().contains(fragment)) {
             if (!(fragment instanceof ContentFragment)) {
@@ -100,22 +109,22 @@ public class MainActivity extends BaseActivity {
                     }
                 }
                 transaction.commit();
-                transaction=null;
+                transaction = null;
                 manager.executePendingTransactions();
-                transaction=manager.beginTransaction();
+                transaction = manager.beginTransaction();
                 transaction.hide(manager.getFragments().get(0));
                 transaction.add(R.id.frag_ll, fragment, tag);
                 transaction.addToBackStack(null);
                 transaction.commit();
-            } else {//从其他界面回到首页
+                //从其他界面回到首页
+            } else if (cacheFragment.getArguments().getInt("id") != fragment.getArguments().getInt("id")) {
                 super.onBackPressed();
                 ContentFragment frag = (ContentFragment) manager.findFragmentByTag("-1");
                 frag.timerCallBack();
+            } else {//从首页回到首页
+                return;
             }
-            return;
         }
-        transaction.replace(R.id.frag_ll, fragment, tag);
-        transaction.commit();
     }
 
     //初始化侧滑菜单
