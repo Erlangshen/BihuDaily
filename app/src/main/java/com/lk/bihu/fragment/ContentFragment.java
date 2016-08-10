@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -56,9 +57,8 @@ public class ContentFragment extends BaseFragment implements TimerCallBack{
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (topStories.size() > 1) {
-                Log.e("", "count-->" + count);
-                Log.e("", "topStories.size()-->" + topStories.size());
+            if (topStories.size() > 1&&(count%topStories.size()<topStories.size())) {
+                Log.e("","count-->"+count);
                 headVp.setCurrentItem(count % topStories.size());
             }
         }
@@ -105,6 +105,14 @@ public class ContentFragment extends BaseFragment implements TimerCallBack{
                 requestData(info);
             }
         });
+
+        homeDataListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Story story= (Story) parent.getAdapter().getItem(position);
+                showToast(story.getId()+"");
+            }
+        });
     }
 
     /**
@@ -146,7 +154,7 @@ public class ContentFragment extends BaseFragment implements TimerCallBack{
                 }
             }).execute();
         } else {
-            new RequestAsyncTask(getActivity(), Constant.CONTENT_URL + id, new AsyncTaskCallBack() {
+            new RequestAsyncTask(getActivity(), Constant.NEWSLIST_URL + id, new AsyncTaskCallBack() {
                 @Override
                 public void post(String rest) {
                     if (swipeRefreshLayout.isRefreshing())

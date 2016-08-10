@@ -21,6 +21,8 @@
         <activity
             android:name=".activity.MainActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".activity.NewsDetailsActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
