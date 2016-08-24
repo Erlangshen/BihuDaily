@@ -1,5 +1,6 @@
 package com.lk.bihu.fragment;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import com.lk.bihu.BihuApplication;
 import com.lk.bihu.R;
+import com.lk.bihu.activity.NewsDetailsActivity;
 import com.lk.bihu.adapter.BihuListAdapter;
 import com.lk.bihu.adapter.HeadAdapter;
 import com.lk.bihu.bean.BihuContent;
@@ -58,7 +60,6 @@ public class ContentFragment extends BaseFragment implements TimerCallBack{
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (topStories.size() > 1&&(count%topStories.size()<topStories.size())) {
-                Log.e("","count-->"+count);
                 headVp.setCurrentItem(count % topStories.size());
             }
         }
@@ -110,9 +111,17 @@ public class ContentFragment extends BaseFragment implements TimerCallBack{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Story story= (Story) parent.getAdapter().getItem(position);
-                showToast(story.getId()+"");
+                Intent intent=new Intent();
+                intent.setClass(getActivity(), NewsDetailsActivity.class);
+                intent.putExtra("story",story);
+                startActivityForResult(intent,222);
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     /**
@@ -311,4 +320,5 @@ public class ContentFragment extends BaseFragment implements TimerCallBack{
         stopTimer();
         startTimer();
     }
+
 }

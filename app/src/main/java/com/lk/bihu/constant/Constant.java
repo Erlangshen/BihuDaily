@@ -11,5 +11,5 @@ public class Constant {
     /**z新闻列表url*/
     public static final String NEWSLIST_URL ="http://news-at.zhihu.com/api/4/theme/";
     /**新闻详情url*/
-    public static final String CONTENT_URL="http://news-at.zhihu.com/api/4/news/";
+    public static final String DETAILS_URL="http://news-at.zhihu.com/api/4/news/";
 }
