@@ -73,7 +73,7 @@ public class NewsDetailsActivity extends BaseActivity implements View.OnClickLis
                     DetailFragment dFragment=new DetailFragment();
                     dFragment.setArguments(bundle);
                     transaction.replace(R.id.details_ll,dFragment);
-                    transaction.commit();
+                    transaction.commitAllowingStateLoss();
                 }else{
                     showShortToast("网络错误，请检查网络！");
                 }
