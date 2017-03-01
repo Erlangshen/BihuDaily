@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">逼乎日报</string>
+    <string name="login_str">请登录</string>
+    <string name="collect_str">收藏</string>
+    <string name="message_str">消息</string>
+    <string name="setting_str">设置</string>
+    <string name="download_str">下载</string>
+    <string name="night_str">夜间</string>
 </resources>

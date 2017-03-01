@@ -54,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="12dp"
-                android:text="请登录"
+                android:text="@string/login_str"
                 android:textColor="#94999D"
                 android:textSize="15sp" />
         </LinearLayout>
@@ -82,7 +82,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="收藏"
+                    android:text="@string/collect_str"
                     android:textColor="#94999D"
                     android:textSize="10sp" />
             </LinearLayout>
@@ -103,7 +103,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="消息"
+                    android:text="@string/message_str"
                     android:textColor="#94999D"
                     android:textSize="10sp" />
             </LinearLayout>
@@ -124,7 +124,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="设置"
+                    android:text="@string/setting_str"
                     android:textColor="#94999D"
                     android:textSize="10sp" />
             </LinearLayout>
@@ -161,7 +161,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
-                    android:text="下载"
+                    android:text="@string/download_str"
                     android:textColor="#94999D"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -182,7 +182,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
-                    android:text="夜间"
+                    android:text="@string/night_str"
                     android:textColor="#94999D"
                     android:textSize="14sp" />
             </LinearLayout>
