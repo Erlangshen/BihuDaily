@@ -38,6 +38,19 @@ public class DateUtils {
 
 		return date;
 	}
+	public static Date StringToDate2(String time) {
+		java.util.Date d = new java.util.Date();
+		Date date;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		try {
+			d = sdf.parse(time);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		date = new Date(d.getTime());
+
+		return date;
+	}
 
 	public static int getSysYear() {
 		java.util.Date d = new java.util.Date();
@@ -77,7 +90,16 @@ public class DateUtils {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		return sdf.format(new java.util.Date());
 	}
-
+	/**得到一天的前一天，传入和返回格式都是20170713*/
+	public static String getBeforeDay(String day){
+		java.util.Date date = StringToDate2(day);
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.DAY_OF_MONTH, -1);
+		date = calendar.getTime();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		return sdf.format(date);
+	}
 	/**
 	 * 取得当前时间的日期字符串
 	 * 

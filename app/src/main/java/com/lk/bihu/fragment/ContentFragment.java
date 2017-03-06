@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ContentFragment extends BaseFragment implements TimerCallBack{
+public class ContentFragment extends BaseFragment implements TimerCallBack {
     private SwipeRefreshView swipeRefreshLayout;
     private ListView homeDataListView;//首页listview
     private List<TopStory> topStories;//首页广告
@@ -61,7 +61,7 @@ public class ContentFragment extends BaseFragment implements TimerCallBack{
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (topStories.size() > 1&&(count%topStories.size()<topStories.size())) {
+            if (topStories.size() > 1 && (count % topStories.size() < topStories.size())) {
                 headVp.setCurrentItem(count % topStories.size());
             }
         }
@@ -71,6 +71,7 @@ public class ContentFragment extends BaseFragment implements TimerCallBack{
     private TextView titleTv;//标题
     private ImageView headIv;//除首页之外的头视图
     private ThemeMainInfo info;
+    private String date;//日期
 
     @Override
     protected int getLayoutId() {
@@ -93,11 +94,12 @@ public class ContentFragment extends BaseFragment implements TimerCallBack{
             headFragments = new ArrayList<BaseFragment>();
 
         initHeadView();
+        date = DateUtils.getSysTime2();
 
         bihuAdapter = new BihuListAdapter(getActivity(), homeStories);
         homeDataListView.setAdapter(bihuAdapter);
         info = (ThemeMainInfo) getArguments().getSerializable("themeMainInfo");
-        requestData(info);
+        requestData(null);
         swipeRefreshLayout.setColorSchemeResources(R.color.swipe_color_1, R.color.swipe_color_1, R.color.swipe_color_1, R.color.swipe_color_1);
         swipeRefreshLayout.setSize(SwipeRefreshLayout.DEFAULT);
         swipeRefreshLayout.setProgressBackgroundColor(R.color.swipe_background_color);
@@ -105,24 +107,25 @@ public class ContentFragment extends BaseFragment implements TimerCallBack{
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                requestData(info);
+                requestData(null);
             }
         });
         swipeRefreshLayout.setOnLoadListener(new OnLoadListener() {
             @Override
             public void onLoad() {
-
+                requestData(DateUtils.getBeforeDay(date));
+                date = DateUtils.getBeforeDay(date);
             }
         });
 
         homeDataListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Story story= (Story) parent.getAdapter().getItem(position);
-                Intent intent=new Intent();
+                Story story = (Story) parent.getAdapter().getItem(position);
+                Intent intent = new Intent();
                 intent.setClass(getActivity(), NewsDetailsActivity.class);
-                intent.putExtra("story",story);
-                startActivityForResult(intent,222);
+                intent.putExtra("story", story);
+                startActivityForResult(intent, 222);
             }
         });
     }
@@ -134,43 +137,66 @@ public class ContentFragment extends BaseFragment implements TimerCallBack{
 
     /**
      * 请求数据
+     *
+     * @param date 是否时上拉加在更多（0-否，1-是）
      */
-    private void requestData(final ThemeMainInfo info) {
+    private void requestData(final String date) {
         int id = info.getId();
         if (-1 == id) {
-            new RequestAsyncTask(getActivity(), Constant.HOME_URL, new AsyncTaskCallBack() {
-                @Override
-                public void post(String rest) {
-                    if (swipeRefreshLayout.isRefreshing())
-                        swipeRefreshLayout.setRefreshing(false);
-                    if (!TextUtils.isEmpty(rest)) {
+            if (date == null) {
+                new RequestAsyncTask(getActivity(), Constant.HOME_URL, new AsyncTaskCallBack() {
+                    @Override
+                    public void post(String rest) {
+                        if (swipeRefreshLayout.isRefreshing())
+                            swipeRefreshLayout.setRefreshing(false);
+                        if (!TextUtils.isEmpty(rest)) {
+                            try {
+                                JSONObject object = new JSONObject(rest);
+                                BihuMenu data = com.alibaba.fastjson.JSONObject.parseObject(object.toString(), BihuMenu.class);
+                                if (DateUtils.getSysTime2().equals(data.getDate())) {
+                                    topStories.clear();
+                                    topStories.addAll(data.getTop_stories());
+                                    if (topStories.size() > 1) {
+                                        headLinear.setVisibility(View.VISIBLE);
+                                        getHeadView(null);
+                                    } else {
+                                        headLinear.setVisibility(View.GONE);
+                                    }
+                                    homeStories.clear();
+                                    homeStories.addAll(data.getStories());
+                                    bihuAdapter.notifyDataSetChanged();
+                                } else {
+                                    showToast("请求数据失败");
+                                }
+                                swipeRefreshLayout.setRefreshing(false);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            showToast("网络错误");
+                        }
+                    }
+                }).execute();
+            } else {
+                new RequestAsyncTask(getActivity(), Constant.BEFORE_NEWS_PATH+date, new AsyncTaskCallBack() {
+                    @Override
+                    public void post(String rest) {
                         try {
                             JSONObject object = new JSONObject(rest);
                             BihuMenu data = com.alibaba.fastjson.JSONObject.parseObject(object.toString(), BihuMenu.class);
-                            if (DateUtils.getSysTime2().equals(data.getDate())) {
-                                topStories.clear();
-                                topStories.addAll(data.getTop_stories());
-                                if (topStories.size() > 1) {
-                                    headLinear.setVisibility(View.VISIBLE);
-                                    getHeadView(null);
-                                } else {
-                                    headLinear.setVisibility(View.GONE);
-                                }
-                                homeStories.clear();
+                            if (DateUtils.getBeforeDay(date).equals(data.getDate())) {
                                 homeStories.addAll(data.getStories());
                                 bihuAdapter.notifyDataSetChanged();
                             } else {
                                 showToast("请求数据失败");
                             }
-                            swipeRefreshLayout.setRefreshing(false);
+                            swipeRefreshLayout.setLoading(false);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                    } else {
-                        showToast("网络错误");
                     }
-                }
-            }).execute();
+                }).execute();
+            }
         } else {
             new RequestAsyncTask(getActivity(), Constant.NEWSLIST_URL + id, new AsyncTaskCallBack() {
                 @Override
