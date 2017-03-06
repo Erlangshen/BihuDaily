@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:orientation="vertical">
-    <android.support.v4.widget.SwipeRefreshLayout
+    <com.lk.bihu.view.SwipeRefreshView
         android:id="@+id/swipeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
@@ -13,5 +13,5 @@
             android:id="@+id/contentList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </com.lk.bihu.view.SwipeRefreshView>
 </LinearLayout>

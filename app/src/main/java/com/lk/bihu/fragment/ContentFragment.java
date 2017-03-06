@@ -29,9 +29,11 @@ import com.lk.bihu.bean.TopStory;
 import com.lk.bihu.constant.Constant;
 import com.lk.bihu.http.RequestAsyncTask;
 import com.lk.bihu.interfaces.AsyncTaskCallBack;
+import com.lk.bihu.interfaces.OnLoadListener;
 import com.lk.bihu.interfaces.TimerCallBack;
 import com.lk.bihu.utils.DateUtils;
 import com.lk.bihu.utils.ImageDownLoader;
+import com.lk.bihu.view.SwipeRefreshView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,7 +44,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class ContentFragment extends BaseFragment implements TimerCallBack{
-    private SwipeRefreshLayout swipeRefreshLayout;
+    private SwipeRefreshView swipeRefreshLayout;
     private ListView homeDataListView;//首页listview
     private List<TopStory> topStories;//首页广告
     private List<Story> homeStories;//首页列表
@@ -78,7 +80,7 @@ public class ContentFragment extends BaseFragment implements TimerCallBack{
     @Override
     protected void initView(View v) {
         homeDataListView = (ListView) v.findViewById(R.id.contentList);
-        swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipeLayout);
+        swipeRefreshLayout = (SwipeRefreshView) v.findViewById(R.id.swipeLayout);
     }
 
     @Override
@@ -104,6 +106,12 @@ public class ContentFragment extends BaseFragment implements TimerCallBack{
             @Override
             public void onRefresh() {
                 requestData(info);
+            }
+        });
+        swipeRefreshLayout.setOnLoadListener(new OnLoadListener() {
+            @Override
+            public void onLoad() {
+
             }
         });
 
@@ -154,6 +162,7 @@ public class ContentFragment extends BaseFragment implements TimerCallBack{
                             } else {
                                 showToast("请求数据失败");
                             }
+                            swipeRefreshLayout.setRefreshing(false);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -177,6 +186,7 @@ public class ContentFragment extends BaseFragment implements TimerCallBack{
                     } else {
                         showToast("网络错误");
                     }
+                    swipeRefreshLayout.setRefreshing(false);
                 }
             }).execute();
         }

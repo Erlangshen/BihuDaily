@@ -81,10 +81,10 @@ public class MainActivity extends BaseActivity {
             transaction.commit();
             cacheFragment = fragment;
             return;
-        }else{//得到当前显示的fragment
-            for(Fragment fr:manager.getFragments()){
-                if(fr!=null&&fr.isVisible()&&(fr instanceof ContentFragment)){
-                    cacheFragment= (ContentFragment) fr;
+        } else {//得到当前显示的fragment
+            for (Fragment fr : manager.getFragments()) {
+                if (fr != null && fr.isVisible() && (fr instanceof ContentFragment)) {
+                    cacheFragment = (ContentFragment) fr;
                 }
             }
         }
