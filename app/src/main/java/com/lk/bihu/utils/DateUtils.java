@@ -100,6 +100,12 @@ public class DateUtils {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		return sdf.format(date);
 	}
+	/**得到[2017-03-07 星期二]类型的数据*/
+	public static String getDateStr(String d){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd EEEE");
+		java.util.Date date = StringToDate2(d);
+		return sdf.format(date);
+	}
 	/**
 	 * 取得当前时间的日期字符串
 	 * 

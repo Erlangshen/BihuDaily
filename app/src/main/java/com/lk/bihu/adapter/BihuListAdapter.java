@@ -44,43 +44,69 @@ public class BihuListAdapter extends BaseAdapter {
     }
 
     @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return stories.get(position).isDateStr() ? 1 : 0;
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Story story = stories.get(position);
-        Holder holder = null;
-        if (convertView == null) {
-            holder = new Holder();
-            convertView = LayoutInflater.from(context).inflate(R.layout.bihu_list_item, null);
-            holder.title = (TextView) convertView.findViewById(R.id.titleTv);
-            holder.image = (ImageView) convertView.findViewById(R.id.itemImage);
-            convertView.setTag(holder);
-        } else {
-            holder = (Holder) convertView.getTag();
-        }
-        holder.title.setText(story.getTitle());
-        if (story.getImages() != null && story.getImages().size() > 0) {
-            final String imageUrl = story.getImages().get(0);
-            holder.image.setTag(imageUrl);
-
-            if (!TextUtils.isEmpty(imageUrl)) {
-                holder.image.setVisibility(View.VISIBLE);
-                holder.image.setImageResource(R.drawable.defaultcovers);
-                Bitmap bitmap = loader.downLoader(holder.image, new ImageDownLoader.ImageLoaderlistener() {
-
-                    @Override
-                    public void onImageLoader(Bitmap bitmap, ImageView imageView) {
-                        if (imageView.getTag() != null && imageView.getTag().equals(imageUrl)) {
-                            imageView.setImageBitmap(bitmap);
-                        }
-                    }
-                });
-                if (bitmap != null) {
-                    holder.image.setImageBitmap(bitmap);
+        switch (getItemViewType(position)) {
+            case 0:
+                Holder holder = null;
+                if (convertView == null) {
+                    holder = new Holder();
+                    convertView = LayoutInflater.from(context).inflate(R.layout.bihu_list_item, null);
+                    holder.title = (TextView) convertView.findViewById(R.id.titleTv);
+                    holder.image = (ImageView) convertView.findViewById(R.id.itemImage);
+                    convertView.setTag(holder);
+                } else {
+                    holder = (Holder) convertView.getTag();
                 }
-            } else {
-                holder.image.setVisibility(View.GONE);
-            }
-        } else {
-            holder.image.setVisibility(View.GONE);
+                holder.title.setText(story.getTitle());
+                if (story.getImages() != null && story.getImages().size() > 0) {
+                    final String imageUrl = story.getImages().get(0);
+                    holder.image.setTag(imageUrl);
+
+                    if (!TextUtils.isEmpty(imageUrl)) {
+                        holder.image.setVisibility(View.VISIBLE);
+                        holder.image.setImageResource(R.drawable.defaultcovers);
+                        Bitmap bitmap = loader.downLoader(holder.image, new ImageDownLoader.ImageLoaderlistener() {
+
+                            @Override
+                            public void onImageLoader(Bitmap bitmap, ImageView imageView) {
+                                if (imageView.getTag() != null && imageView.getTag().equals(imageUrl)) {
+                                    imageView.setImageBitmap(bitmap);
+                                }
+                            }
+                        });
+                        if (bitmap != null) {
+                            holder.image.setImageBitmap(bitmap);
+                        }
+                    } else {
+                        holder.image.setVisibility(View.GONE);
+                    }
+                } else {
+                    holder.image.setVisibility(View.GONE);
+                }
+                break;
+            case 1:
+                Holder2 holder2=null;
+                if (convertView==null){
+                    holder2=new Holder2();
+                    convertView=LayoutInflater.from(context).inflate(R.layout.date_str_layout,null);
+                    holder2.dateStr= (TextView) convertView.findViewById(R.id.dateStr);
+                    convertView.setTag(holder2);
+                }else{
+                    holder2= (Holder2) convertView.getTag();
+                }
+                holder2.dateStr.setText(story.getTitle());
+                break;
         }
         return convertView;
     }
@@ -88,5 +114,8 @@ public class BihuListAdapter extends BaseAdapter {
     class Holder {
         TextView title;
         ImageView image;
+    }
+    class Holder2{
+        TextView dateStr;
     }
 }

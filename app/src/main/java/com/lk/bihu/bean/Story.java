@@ -6,13 +6,22 @@ import java.util.List;
 /**
  * 展示列表每个item的详情
  */
-public class Story implements Serializable{
+public class Story implements Serializable {
     private String title;
     private String ga_prefix;
     private List<String> images;
     private boolean multipic;
     private int type;
     private int id;
+    private boolean isDateStr = false;
+
+    public boolean isDateStr() {
+        return isDateStr;
+    }
+
+    public void setDateStr(boolean dateStr) {
+        isDateStr = dateStr;
+    }
 
     public String getTitle() {
         return title;

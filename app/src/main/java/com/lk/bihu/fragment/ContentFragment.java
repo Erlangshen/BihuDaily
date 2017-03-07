@@ -99,7 +99,7 @@ public class ContentFragment extends BaseFragment implements TimerCallBack {
         bihuAdapter = new BihuListAdapter(getActivity(), homeStories);
         homeDataListView.setAdapter(bihuAdapter);
         info = (ThemeMainInfo) getArguments().getSerializable("themeMainInfo");
-        requestData(null);
+        requestData(0);
         swipeRefreshLayout.setColorSchemeResources(R.color.swipe_color_1, R.color.swipe_color_1, R.color.swipe_color_1, R.color.swipe_color_1);
         swipeRefreshLayout.setSize(SwipeRefreshLayout.DEFAULT);
         swipeRefreshLayout.setProgressBackgroundColor(R.color.swipe_background_color);
@@ -107,14 +107,13 @@ public class ContentFragment extends BaseFragment implements TimerCallBack {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                requestData(null);
+                requestData(0);
             }
         });
         swipeRefreshLayout.setOnLoadListener(new OnLoadListener() {
             @Override
             public void onLoad() {
-                requestData(DateUtils.getBeforeDay(date));
-                date = DateUtils.getBeforeDay(date);
+                requestData(1);
             }
         });
 
@@ -122,10 +121,12 @@ public class ContentFragment extends BaseFragment implements TimerCallBack {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Story story = (Story) parent.getAdapter().getItem(position);
-                Intent intent = new Intent();
-                intent.setClass(getActivity(), NewsDetailsActivity.class);
-                intent.putExtra("story", story);
-                startActivityForResult(intent, 222);
+                if (!story.isDateStr()) {
+                    Intent intent = new Intent();
+                    intent.setClass(getActivity(), NewsDetailsActivity.class);
+                    intent.putExtra("story", story);
+                    startActivityForResult(intent, 222);
+                }
             }
         });
     }
@@ -138,12 +139,12 @@ public class ContentFragment extends BaseFragment implements TimerCallBack {
     /**
      * 请求数据
      *
-     * @param date 是否时上拉加在更多（0-否，1-是）
+     * @param isLoadMore 是否是上拉加载更多（0-否，1-是）
      */
-    private void requestData(final String date) {
+    private void requestData(int isLoadMore) {
         int id = info.getId();
         if (-1 == id) {
-            if (date == null) {
+            if (isLoadMore == 0) {
                 new RequestAsyncTask(getActivity(), Constant.HOME_URL, new AsyncTaskCallBack() {
                     @Override
                     public void post(String rest) {
@@ -178,15 +179,20 @@ public class ContentFragment extends BaseFragment implements TimerCallBack {
                     }
                 }).execute();
             } else {
-                new RequestAsyncTask(getActivity(), Constant.BEFORE_NEWS_PATH+date, new AsyncTaskCallBack() {
+                new RequestAsyncTask(getActivity(), Constant.BEFORE_NEWS_PATH + date, new AsyncTaskCallBack() {
                     @Override
                     public void post(String rest) {
                         try {
                             JSONObject object = new JSONObject(rest);
                             BihuMenu data = com.alibaba.fastjson.JSONObject.parseObject(object.toString(), BihuMenu.class);
                             if (DateUtils.getBeforeDay(date).equals(data.getDate())) {
+                                Story story = new Story();
+                                story.setDateStr(true);
+                                story.setTitle(DateUtils.getDateStr(DateUtils.getBeforeDay(date)));
+                                homeStories.add(story);
                                 homeStories.addAll(data.getStories());
                                 bihuAdapter.notifyDataSetChanged();
+                                date = DateUtils.getBeforeDay(date);
                             } else {
                                 showToast("请求数据失败");
                             }
