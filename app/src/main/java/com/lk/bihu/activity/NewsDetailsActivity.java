@@ -69,7 +69,7 @@ public class NewsDetailsActivity extends BaseActivity implements View.OnClickLis
                 if(!TextUtils.isEmpty(rest)){
                     newsDetail = JSONObject.parseObject(rest.toString(), NewsDetail.class);
                     Bundle bundle=new Bundle();
-                    bundle.putString("body",newsDetail.getBody());
+                    bundle.putSerializable("newsDetail",newsDetail);
                     DetailFragment dFragment=new DetailFragment();
                     dFragment.setArguments(bundle);
                     transaction.replace(R.id.details_ll,dFragment);
