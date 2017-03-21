@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.view.ViewConfigurationCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,6 +45,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static android.R.attr.x;
+
 public class ContentFragment extends BaseFragment implements TimerCallBack {
     private SwipeRefreshView swipeRefreshLayout;
     private ListView homeDataListView;//首页listview
@@ -72,6 +76,7 @@ public class ContentFragment extends BaseFragment implements TimerCallBack {
     private ImageView headIv;//除首页之外的头视图
     private ThemeMainInfo info;
     private String date;//日期
+    private int mTouchSlop;//viewpager滑动距离临界值
 
     @Override
     protected int getLayoutId() {
@@ -92,6 +97,8 @@ public class ContentFragment extends BaseFragment implements TimerCallBack {
             topStories = new ArrayList<TopStory>();
         if (headFragments == null)
             headFragments = new ArrayList<BaseFragment>();
+        ViewConfiguration configuration = ViewConfiguration.get(getActivity());
+        mTouchSlop = ViewConfigurationCompat.getScaledPagingTouchSlop(configuration);
 
         initHeadView();
         date = DateUtils.getSysTime2();
@@ -120,12 +127,16 @@ public class ContentFragment extends BaseFragment implements TimerCallBack {
         homeDataListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Story story = (Story) parent.getAdapter().getItem(position);
-                if (!story.isDateStr()) {
-                    Intent intent = new Intent();
-                    intent.setClass(getActivity(), NewsDetailsActivity.class);
-                    intent.putExtra("story", story);
-                    startActivityForResult(intent, 222);
+                try {
+                    Story story = (Story) parent.getAdapter().getItem(position);
+                    if (story!=null&&!story.isDateStr()) {
+                        Intent intent = new Intent();
+                        intent.setClass(getActivity(), NewsDetailsActivity.class);
+                        intent.putExtra("story_id", story.getId());
+                        startActivityForResult(intent, 222);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
             }
         });
@@ -285,6 +296,39 @@ public class ContentFragment extends BaseFragment implements TimerCallBack {
                 @Override
                 public void onPageScrollStateChanged(int state) {
 
+                }
+            });
+            headVp.setOnTouchListener(new View.OnTouchListener() {
+                int touchFlag = 0;
+                float x = 0, y = 0;
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            touchFlag = 0;
+                            x = event.getX();
+                            y = event.getY();
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            float xDiff = Math.abs(event.getX() - x);
+                            float yDiff = Math.abs(event.getY() - y);
+                            if (xDiff < mTouchSlop && xDiff >= yDiff)
+                                touchFlag = 0;
+                            else
+                                touchFlag = -1;
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            if (touchFlag == 0) {
+                                int currentItem = headVp.getCurrentItem();
+                                Intent it = new Intent();
+                                it.setClass(getActivity(), NewsDetailsActivity.class);
+                                it.putExtra("story_id", topStories.get(currentItem).getId());
+                                startActivity(it);
+                            }
+                            break;
+                    }
+                    return false;
                 }
             });
             headAdapter.setFragments(headFragments);

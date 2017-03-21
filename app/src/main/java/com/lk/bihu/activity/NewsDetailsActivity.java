@@ -51,10 +51,10 @@ public class NewsDetailsActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     protected void initData() {
-        Story story= (Story) getIntent().getSerializableExtra("story");
-        url= Constant.DETAILS_URL+story.getId();
-        FragmentManager manager=getSupportFragmentManager();
-        transaction=manager.beginTransaction();
+        int storyId = getIntent().getIntExtra("story_id",0);
+        url = Constant.DETAILS_URL + storyId;
+        FragmentManager manager = getSupportFragmentManager();
+        transaction = manager.beginTransaction();
         requestData(url);
 
     }
@@ -62,24 +62,25 @@ public class NewsDetailsActivity extends BaseActivity implements View.OnClickLis
     /**
      * 请求网络数据
      */
-    private void requestData(String url){
+    private void requestData(String url) {
         new RequestAsyncTask(NewsDetailsActivity.this, url, "数据加载中...", new AsyncTaskCallBack() {
             @Override
             public void post(String rest) {
-                if(!TextUtils.isEmpty(rest)){
+                if (!TextUtils.isEmpty(rest)) {
                     newsDetail = JSONObject.parseObject(rest.toString(), NewsDetail.class);
-                    Bundle bundle=new Bundle();
-                    bundle.putSerializable("newsDetail",newsDetail);
-                    DetailFragment dFragment=new DetailFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("newsDetail", newsDetail);
+                    DetailFragment dFragment = new DetailFragment();
                     dFragment.setArguments(bundle);
-                    transaction.replace(R.id.details_ll,dFragment);
+                    transaction.replace(R.id.details_ll, dFragment);
                     transaction.commitAllowingStateLoss();
-                }else{
+                } else {
                     showShortToast("网络错误，请检查网络！");
                 }
             }
         }).execute();
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
