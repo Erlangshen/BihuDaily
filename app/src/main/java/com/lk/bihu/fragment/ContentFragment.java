@@ -393,14 +393,6 @@ public class ContentFragment extends BaseFragment implements TimerCallBack {
         count = 0;
     }
 
-    /**
-     * dp转成px
-     */
-    public int dip2px(float dipValue) {
-        float scale = getResources().getDisplayMetrics().density;
-        return (int) (dipValue * scale + 0.5f);
-    }
-
     @Override
     public void timerCallBack() {
         stopTimer();

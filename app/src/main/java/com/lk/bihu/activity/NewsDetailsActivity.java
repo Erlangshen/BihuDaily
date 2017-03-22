@@ -11,11 +11,12 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.lk.bihu.R;
 import com.lk.bihu.bean.NewsDetail;
-import com.lk.bihu.bean.Story;
 import com.lk.bihu.constant.Constant;
 import com.lk.bihu.fragment.DetailFragment;
 import com.lk.bihu.http.RequestAsyncTask;
 import com.lk.bihu.interfaces.AsyncTaskCallBack;
+
+import static com.lk.bihu.R.id.details_ll;
 
 /**
  * 新闻详情
@@ -56,7 +57,6 @@ public class NewsDetailsActivity extends BaseActivity implements View.OnClickLis
         FragmentManager manager = getSupportFragmentManager();
         transaction = manager.beginTransaction();
         requestData(url);
-
     }
 
     /**
@@ -72,7 +72,7 @@ public class NewsDetailsActivity extends BaseActivity implements View.OnClickLis
                     bundle.putSerializable("newsDetail", newsDetail);
                     DetailFragment dFragment = new DetailFragment();
                     dFragment.setArguments(bundle);
-                    transaction.replace(R.id.details_ll, dFragment);
+                    transaction.replace(details_ll, dFragment);
                     transaction.commitAllowingStateLoss();
                 } else {
                     showShortToast("网络错误，请检查网络！");

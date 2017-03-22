@@ -41,4 +41,11 @@ public abstract class BaseFragment extends Fragment {
 	protected String getEtInfo(EditText edit){
 		return edit.getText().toString().trim();
 	}
+	/**
+	 * dp转成px
+	 */
+	public int dip2px(float dipValue) {
+		float scale = getResources().getDisplayMetrics().density;
+		return (int) (dipValue * scale + 0.5f);
+	}
 }

@@ -114,4 +114,11 @@ public abstract class BaseActivity extends FragmentActivity {
     protected void showShortToast(String text) {
         Toast.makeText(BaseActivity.this, text, Toast.LENGTH_SHORT).show();
     }
+    /**
+     * dp转成px
+     */
+    public int dip2px(float dipValue) {
+        float scale = getResources().getDisplayMetrics().density;
+        return (int) (dipValue * scale + 0.5f);
+    }
 }

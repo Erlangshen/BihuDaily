@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,7 +34,7 @@ public class DetailFragment extends BaseFragment {
     private TextView tBar_tv, tv_body;
     private Toolbar toolBar;
     private ImageDownLoader loader;
-    private String imageUrl="";
+    private String imageUrl = "";
     private ImageLoaderTools mImageLoaderTools;
 
     @Override
@@ -54,7 +55,7 @@ public class DetailFragment extends BaseFragment {
 
     @Override
     protected void initData() {
-        mImageLoaderTools=ImageLoaderTools.getInstance(getActivity());
+        mImageLoaderTools = ImageLoaderTools.getInstance(getActivity());
         loader = BihuApplication.getApp().getImageDownLoaderInstance();
         Bundle bundle = getArguments();
         newsDetail = (NewsDetail) bundle.getSerializable("newsDetail");
@@ -64,8 +65,8 @@ public class DetailFragment extends BaseFragment {
         ctl.setExpandedTitleTextAppearance(R.style.tv_expanded_style);//设置还没收缩时状态下字体颜色
         ctl.setCollapsedTitleTextAppearance(R.style.tv_collapsed_style);//设置收缩后Toolbar上字体的颜色
         ctl.setCollapsedTitleGravity(Gravity.CENTER_HORIZONTAL);
-        imageUrl=newsDetail.getImage();
-        if (imageUrl!= null){
+        imageUrl = newsDetail.getImage();
+        if (imageUrl != null) {
             tBar_iv.setTag(imageUrl);
             Bitmap bitmap = loader.downLoader(tBar_iv, new ImageDownLoader.ImageLoaderlistener() {
                 @Override
@@ -75,12 +76,31 @@ public class DetailFragment extends BaseFragment {
                     }
                 }
             });
-            if (bitmap!=null){
+            if (bitmap != null) {
                 tBar_iv.setImageBitmap(bitmap);
             }
-        }else{
-
+        } else {
+            CoordinatorLayout.LayoutParams params = new CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.MATCH_PARENT, 0);
+            appBar.setLayoutParams(params);
         }
         tBar_tv.setText(newsDetail.getImage_source());
+
+        tv_body.setOnTouchListener(new View.OnTouchListener() {
+            float xDiff = 0.0f;
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        xDiff = event.getX();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        xDiff = event.getX() - xDiff;
+                        if (xDiff > dip2px(30))
+                            getActivity().finish();
+                        break;
+                }
+                return false;
+            }
+        });
     }
 }
