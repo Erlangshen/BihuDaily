@@ -87,7 +87,7 @@ public class ImageDownLoader {
 							msg.what = LOAD_SUCCESS;
 							handler.sendMessage(msg);
 							try {
-								utils.savaBitmap(url, bitmap);
+								utils.saveBitmap(url, bitmap);
 							} catch (IOException e) {
 								e.printStackTrace();
 							}

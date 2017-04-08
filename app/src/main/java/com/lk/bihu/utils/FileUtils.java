@@ -30,7 +30,7 @@ public class FileUtils {
 	/**
 	 * 保存Image的目录名
 	 */
-	private final static String FOLDER_NAME = "/tea/image";
+	private final static String FOLDER_NAME = "/bihu/image";
 
 	public FileUtils(Context context) {
 		mDataRootPath = context.getCacheDir().getPath();
@@ -48,11 +48,10 @@ public class FileUtils {
 	/**
 	 * 保存Image的方法，有sd卡存储到sd卡，没有就存储到手机目录
 	 * 
-	 * @param fileName
 	 * @param bitmap
 	 * @throws IOException
 	 */
-	public void savaBitmap(String url, Bitmap bitmap) throws IOException {
+	public void saveBitmap(String url, Bitmap bitmap) throws IOException {
 		if (bitmap == null) {
 			return;
 		}
@@ -72,7 +71,6 @@ public class FileUtils {
 	/**
 	 * 从手机或者sd卡获取Bitmap
 	 * 
-	 * @param fileName
 	 * @return
 	 */
 	public Bitmap getBitmap(String url) {
