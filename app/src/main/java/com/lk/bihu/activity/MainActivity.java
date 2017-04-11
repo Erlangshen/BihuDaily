@@ -24,9 +24,13 @@ import com.lk.bihu.fragment.HeadFragment;
 import com.lk.bihu.http.RequestAsyncTask;
 import com.lk.bihu.interfaces.AsyncTaskCallBack;
 import com.lk.bihu.interfaces.MenuItemClickListener;
+import com.lk.bihu.utils.SPUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity {
     private Button menu;
@@ -63,6 +67,15 @@ public class MainActivity extends BaseActivity {
         ThemeMainInfo info = new ThemeMainInfo();
         info.setId(-1);
         initContentFragment(info, "-1");
+    }
+
+    @OnClick(R.id.downLoadLinear)
+    void downLoad() {
+        showShortToast("尚未完成");
+    }
+    @OnClick(R.id.nightLinear)
+    void night(){
+        showShortToast("尚未完成");
     }
 
     /**
@@ -129,6 +142,7 @@ public class MainActivity extends BaseActivity {
 
     //初始化侧滑菜单
     private void initMenu() {
+        others = SPUtils.getMenuList(MainActivity.this);
         if (others == null)
             others = new ArrayList<ThemeMainInfo>();
         mAdapter = new MenuAdapter(MainActivity.this, others, new MenuItemClickListener() {
@@ -156,6 +170,7 @@ public class MainActivity extends BaseActivity {
                         info.setId(-1);
                         others.add(info);
                         others.addAll(all.getOthers());
+                        SPUtils.setMenuList(MainActivity.this, others);
                         mAdapter.notifyDataSetChanged();
                     } catch (Exception e) {
                         e.printStackTrace();

@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class HttpClientUtil {
@@ -67,20 +68,21 @@ public class HttpClientUtil {
 
     public static Bitmap getBitmapFormUrl(String url) {
         Bitmap bitmap = null;
-        HttpClient httpClient = new DefaultHttpClient();
-        // 设置超时时间
-        HttpConnectionParams.setConnectionTimeout(new BasicHttpParams(), 6 * 1000);
-        HttpGet get = new HttpGet(url);
+        HttpURLConnection conn=null;
         try {
-            HttpResponse response = httpClient.execute(get);
-            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                HttpEntity entity = response.getEntity();
-                bitmap = BitmapFactory.decodeStream(entity.getContent());
-            }
-        } catch (ClientProtocolException e) {
+            URL u=new URL(url);
+            conn= (HttpURLConnection) u.openConnection();
+            conn.setRequestProperty("Content-Type",
+                    "text/xml; charset=gb2312");
+            conn.setConnectTimeout(8000);
+            conn.setRequestMethod("GET");
+            conn.connect();
+            InputStream is = conn.getInputStream();
+            bitmap = BitmapFactory.decodeStream(is);
+            is.close();
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            bitmap=null;
         }
         return bitmap;
     }

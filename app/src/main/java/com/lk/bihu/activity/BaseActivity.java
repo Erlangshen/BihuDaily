@@ -14,6 +14,8 @@ import com.lk.bihu.BihuApplication;
 import com.lk.bihu.R;
 import com.lk.bihu.utils.DeviceUtil;
 
+import butterknife.ButterKnife;
+
 public abstract class BaseActivity extends FragmentActivity {
     private BihuApplication app = null;
     private WindowManager mWindowManager = null;
@@ -37,6 +39,7 @@ public abstract class BaseActivity extends FragmentActivity {
             mNightView.setBackgroundResource(R.color.night_mask);
         }
         setContentView(getLayoutId());
+        ButterKnife.bind(this);
         initView();
         initData();
     }

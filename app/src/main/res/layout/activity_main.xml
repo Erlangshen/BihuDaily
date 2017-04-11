@@ -145,8 +145,9 @@
             android:orientation="horizontal">
 
             <LinearLayout
+                android:id="@+id/downLoadLinear"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:layout_marginLeft="10dp"
@@ -167,8 +168,9 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/nightLinear"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
