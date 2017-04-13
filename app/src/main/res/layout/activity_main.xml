@@ -24,7 +24,7 @@
             android:layout_width="25dp"
             android:layout_height="20dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="30dp"
             android:background="@drawable/menu" />
     </RelativeLayout>
 
@@ -34,6 +34,7 @@
         android:layout_height="match_parent"
         android:background="#343434"
         android:layout_gravity="left"
+        android:clickable="true"
         android:orientation="vertical">
 
         <LinearLayout
@@ -42,7 +43,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingLeft="20dp"
-            android:paddingTop="10dp">
+            android:paddingTop="30dp">
 
             <ImageView
                 android:id="@+id/login"
@@ -147,7 +148,7 @@
             <LinearLayout
                 android:id="@+id/downLoadLinear"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:layout_marginLeft="10dp"
@@ -170,7 +171,7 @@
             <LinearLayout
                 android:id="@+id/nightLinear"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">

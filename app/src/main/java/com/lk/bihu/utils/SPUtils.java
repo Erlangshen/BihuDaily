@@ -2,7 +2,6 @@ package com.lk.bihu.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v4.content.SharedPreferencesCompat;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONObject;

@@ -44,6 +44,7 @@ public class MainActivity extends BaseActivity {
     private boolean flag = true;//没有添加其他页面-true；添加除首页之外的任何其他页面-false
     private List<Fragment> delList;
     private ContentFragment cacheFragment;//判断当前页面的fragment和将要添加的fragment是否为同一个
+    private boolean isNight=false;
 
     @Override
     protected int getLayoutId() {
@@ -73,9 +74,14 @@ public class MainActivity extends BaseActivity {
     void downLoad() {
         showShortToast("尚未完成");
     }
+
     @OnClick(R.id.nightLinear)
     void night(){
-        showShortToast("尚未完成");
+        if (isNight)
+            ChangeToDay();
+        else
+            ChangeToNight();
+        isNight=!isNight;
     }
 
     /**
