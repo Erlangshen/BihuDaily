@@ -1,21 +1,51 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.jakewharton.butterknife'
 
+def ra = rootProject.ext.android
+def rd = rootProject.ext.dependencies
+
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
-    useLibrary 'org.apache.http.legacy'
+    compileSdkVersion ra.compileSdkVersion
+    buildToolsVersion ra.buildToolsVersion
+    useLibrary ra.useLibrary
 
     defaultConfig {
-        applicationId "com.lk.bihu"
-        minSdkVersion 14
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        applicationId ra.applicationId
+        minSdkVersion ra.minSdkVersion
+        targetSdkVersion ra.targetSdkVersion
+        versionCode ra.versionCode
+        versionName ra.versionName
+    }
+    signingConfigs {
+        debug {
+
+        }
+        release {
+//            storeFile file("../demo.keystore")
+//            storePassword "demo"
+//            keyAlias "demo"
+//            keyPassword "demo"
+        }
     }
     buildTypes {
-        release {
+        debug {
+            //版本名字加上后缀，如 1.0-debug，这样方便调试的时候识别
+            versionNameSuffix "-debug"
             minifyEnabled false
+            zipAlignEnabled false
+            shrinkResources false
+//            signingConfig signingConfig.debug
+        }
+        release {
+            //是否混淆
+            minifyEnabled true
+            //是否zip优化
+            zipAlignEnabled true
+            //删除一些无用的资源
+            shrinkResources true
+            //签名所用的配置文件
+//            signingConfig signingConfig.release
+            //混淆所用的文件
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -23,10 +53,10 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile rd.appcompatv7
     compile files('src/libs/fastjson-1.1.41.jar')
-    compile 'com.android.support:design:23.1.1'
+    compile rd.design
     compile files('src/libs/universal-image-loader-1.9.5.jar')
-    compile 'com.jakewharton:butterknife:8.4.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    compile rd.butterknife
+    annotationProcessor rd.butterknifecompiler
 }

@@ -1,0 +1,18 @@
+ext {
+    android = [
+            compileSdkVersion: 25,
+            buildToolsVersion: "25.0.2",
+            useLibrary       : 'org.apache.http.legacy',
+            applicationId    : "com.lk.bihu",
+            minSdkVersion    : 14,
+            targetSdkVersion : 25,
+            versionCode      : 1,
+            versionName      : "1.0"
+    ]
+    dependencies = [
+            "appcompatv7"        : 'com.android.support:appcompat-v7:25.1.1',
+            "design"             : 'com.android.support:design:25.1.1',
+            "butterknife"        : 'com.jakewharton:butterknife:8.4.0',
+            "butterknifecompiler": 'com.jakewharton:butterknife-compiler:8.4.0'
+    ]
+}
