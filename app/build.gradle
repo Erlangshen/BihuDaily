@@ -54,9 +54,9 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile rd.appcompatv7
-    compile files('src/libs/fastjson-1.1.41.jar')
     compile rd.design
-    compile files('src/libs/universal-image-loader-1.9.5.jar')
     compile rd.butterknife
+    compile rd.universalimageloader
+    compile rd.fastjson
     annotationProcessor rd.butterknifecompiler
 }

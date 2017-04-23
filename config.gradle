@@ -10,9 +10,11 @@ ext {
             versionName      : "1.0"
     ]
     dependencies = [
-            "appcompatv7"        : 'com.android.support:appcompat-v7:25.1.1',
-            "design"             : 'com.android.support:design:25.1.1',
-            "butterknife"        : 'com.jakewharton:butterknife:8.4.0',
-            "butterknifecompiler": 'com.jakewharton:butterknife-compiler:8.4.0'
+            "appcompatv7"         : 'com.android.support:appcompat-v7:25.1.1',
+            "design"              : 'com.android.support:design:25.1.1',
+            "butterknife"         : 'com.jakewharton:butterknife:8.4.0',
+            "butterknifecompiler" : 'com.jakewharton:butterknife-compiler:8.4.0',
+            "universalimageloader": 'com.nostra13.universalimageloader:universal-image-loader:1.9.5',
+            "fastjson"            : 'com.alibaba:fastjson:1.2.31'
     ]
 }
