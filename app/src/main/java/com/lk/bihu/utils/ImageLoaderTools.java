@@ -19,15 +19,15 @@ public class ImageLoaderTools {
     private static final int DISK_CACHE_SIZE_BYTES = 50 * 1024 * 1024;
     private static final int MEMORY_CACHE_SIZE_BYTES = 2 * 1024 * 1024;
 
-    private ImageLoaderTools(Context context){
+    private ImageLoaderTools(Context context) {
         setImageLoader(initImageLoader(context));
     }
 
-    public static ImageLoaderTools getInstance(Context context){
-        if(mImageLoaderWrapper == null){
+    public static ImageLoaderTools getInstance(Context context) {
+        if (mImageLoaderWrapper == null) {
             mImageLoaderWrapper = new ImageLoaderTools(context);
             return mImageLoaderWrapper;
-        }else{
+        } else {
             return mImageLoaderWrapper;
         }
     }
@@ -64,25 +64,19 @@ public class ImageLoaderTools {
 
     //封装方法
     public void displayImage(String mResName, ImageView imageView) {
-        if(mResName.startsWith("http://")){
+        if (mResName.startsWith("https://")) {
             mImageLoader.displayImage(mResName, imageView);
-        }else if(mResName.startsWith("assets://"))
-        {
+        } else if (mResName.startsWith("http://")) {
             mImageLoader.displayImage(mResName, imageView);
-        }
-        else if(mResName.startsWith("file://"))
-        {
+        } else if (mResName.startsWith("assets://")) {
             mImageLoader.displayImage(mResName, imageView);
-        }
-        else if(mResName.startsWith("content://"))
-        {
+        } else if (mResName.startsWith("file://")) {
             mImageLoader.displayImage(mResName, imageView);
-        }
-        else if(mResName.startsWith("drawable://"))
-        {
+        } else if (mResName.startsWith("content://")) {
             mImageLoader.displayImage(mResName, imageView);
-        }
-        else{
+        } else if (mResName.startsWith("drawable://")) {
+            mImageLoader.displayImage(mResName, imageView);
+        } else {
             Uri uri = Uri.parse(mResName);
             imageView.setImageURI(uri);
         }
