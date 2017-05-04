@@ -25,11 +25,15 @@ import android.widget.TextView;
 import com.lk.bihu.BihuApplication;
 import com.lk.bihu.R;
 import com.lk.bihu.bean.NewsDetail;
+import com.lk.bihu.http.HttpClientUtil;
+import com.lk.bihu.http.RequestImageAsyncTask;
+import com.lk.bihu.interfaces.ImageAsyncTaskCallBack;
 import com.lk.bihu.utils.ImageDownLoader;
 import com.lk.bihu.utils.ImageLoaderTools;
 import com.lk.bihu.utils.MessageSpan;
 import com.lk.bihu.utils.MyLinkMovementMethod;
 import com.lk.bihu.utils.URLImageParser;
+import com.lk.bihu.view.ZoomImageView;
 
 import java.lang.ref.WeakReference;
 
@@ -51,9 +55,10 @@ public class DetailFragment extends BaseFragment {
     private ImageDownLoader loader;
     private String imageUrl = "";
     private ImageLoaderTools mImageLoaderTools;
-    private ImageView detailIv;
+    private ZoomImageView detailIv;
     private RelativeLayout detailRl;
     private boolean isImageShow = false;
+    private ImageView imageBack;
 
     private static class MyHandler extends Handler{
         WeakReference<DetailFragment> mWeakReference;
@@ -85,7 +90,7 @@ public class DetailFragment extends BaseFragment {
                 }
             }
         }
-    };
+    }
 
     public void setIsImageShow(boolean isImageShow){
         this.isImageShow = isImageShow ;
@@ -97,7 +102,17 @@ public class DetailFragment extends BaseFragment {
     }
 
     public void loadImage(final String imageSource) {
-        mImageLoaderTools.displayImage(imageSource,detailIv);
+        try {
+            new RequestImageAsyncTask(getActivity(), imageSource, "正在加载大图...", new ImageAsyncTaskCallBack() {
+                @Override
+                public void callBack(Bitmap bm) {
+                    detailIv.setImage(bm);
+                }
+            }).execute();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         detailRl.setVisibility(View.VISIBLE);
         isImageShow = true;
     }
@@ -116,8 +131,9 @@ public class DetailFragment extends BaseFragment {
         tBar_tv = (TextView) v.findViewById(R.id.tBar_tv);
         toolBar = (Toolbar) v.findViewById(R.id.toolBar);
         tv_body = (TextView) v.findViewById(R.id.tv_body);
-        detailIv = (ImageView) v.findViewById(R.id.detailIv);
+        detailIv = (ZoomImageView) v.findViewById(R.id.detailIv);
         detailRl = (RelativeLayout) v.findViewById(R.id.detailRl);
+        imageBack= (ImageView) v.findViewById(R.id.imageBack);
     }
 
     @Override
@@ -171,7 +187,7 @@ public class DetailFragment extends BaseFragment {
                 return false;
             }
         });
-        detailIv.setOnClickListener(new View.OnClickListener() {
+        imageBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isImageShow){

@@ -68,10 +68,10 @@ public class HttpClientUtil {
 
     public static Bitmap getBitmapFormUrl(String url) {
         Bitmap bitmap = null;
-        HttpURLConnection conn=null;
+        HttpURLConnection conn = null;
         try {
-            URL u=new URL(url);
-            conn= (HttpURLConnection) u.openConnection();
+            URL u = new URL(url);
+            conn = (HttpURLConnection) u.openConnection();
             conn.setRequestProperty("Content-Type",
                     "text/xml; charset=gb2312");
             conn.setConnectTimeout(8000);
@@ -82,14 +82,14 @@ public class HttpClientUtil {
             is.close();
         } catch (Exception e) {
             e.printStackTrace();
-            bitmap=null;
+            bitmap = null;
         }
         return bitmap;
     }
 
     public static String getJson(String url) {
         HttpURLConnection conn = null;
-        String data="";
+        String data = "";
         try {
             URL u = new URL(url);
             conn = (HttpURLConnection) u.openConnection();
@@ -116,17 +116,17 @@ public class HttpClientUtil {
             conn.setConnectTimeout(8000);
             conn.setRequestMethod("GET");
             conn.connect();
-            InputStreamReader isr=new InputStreamReader(conn.getInputStream(),"utf-8");
-            BufferedReader br=new BufferedReader(isr);
-            String line=null;
-            while((line=br.readLine())!=null){
-                data+=line;
+            InputStreamReader isr = new InputStreamReader(conn.getInputStream(), "utf-8");
+            BufferedReader br = new BufferedReader(isr);
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                data += line;
             }
             isr.close();
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
-            if (conn!=null){
+        } finally {
+            if (conn != null) {
                 conn.disconnect();
             }
         }
