@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.lk.bihu.BihuApplication;
 import com.lk.bihu.R;
 import com.lk.bihu.utils.ImageDownLoader;
@@ -28,19 +29,23 @@ public class HeadFragment extends BaseFragment{
     @Override
     protected void initData() {
         imageUrl= getImageUrl();
-        loader= BihuApplication.getApp().getImageDownLoaderInstance();
-        image.setTag(imageUrl);
-        Bitmap bitmap = loader.downLoader(image, new ImageDownLoader.ImageLoaderlistener() {
-            @Override
-            public void onImageLoader(Bitmap bitmap, ImageView imageView) {
-                if (imageView.getTag() != null && imageView.getTag().equals(imageUrl)) {
-                    imageView.setImageBitmap(bitmap);
-                }
-            }
-        });
-        if (bitmap!=null){
-            image.setImageBitmap(bitmap);
-        }
+        Glide.with(getActivity())
+                .load(imageUrl)
+                .error(R.drawable.defaultcovers)
+                .into(image);
+//        loader= BihuApplication.getApp().getImageDownLoaderInstance();
+//        image.setTag(imageUrl);
+//        Bitmap bitmap = loader.downLoader(image, new ImageDownLoader.ImageLoaderlistener() {
+//            @Override
+//            public void onImageLoader(Bitmap bitmap, ImageView imageView) {
+//                if (imageView.getTag() != null && imageView.getTag().equals(imageUrl)) {
+//                    imageView.setImageBitmap(bitmap);
+//                }
+//            }
+//        });
+//        if (bitmap!=null){
+//            image.setImageBitmap(bitmap);
+//        }
     }
 
     public String getImageUrl() {

@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.lk.bihu.BihuApplication;
 import com.lk.bihu.R;
 import com.lk.bihu.activity.NewsDetailsActivity;
@@ -339,19 +340,23 @@ public class ContentFragment extends BaseFragment implements TimerCallBack {
             headVp.setVisibility(View.GONE);
             headIv.setVisibility(View.VISIBLE);
             headLinear.setVisibility(View.GONE);
-            ImageDownLoader loader = BihuApplication.getApp().getImageDownLoaderInstance();
-            headIv.setTag(info.getThumbnail());
-            Bitmap bitmap = loader.downLoader(headIv, new ImageDownLoader.ImageLoaderlistener() {
-                @Override
-                public void onImageLoader(Bitmap bitmap, ImageView imageView) {
-                    if (imageView.getTag() != null && imageView.getTag().equals(info.getThumbnail())) {
-                        imageView.setImageBitmap(bitmap);
-                    }
-                }
-            });
-            if (bitmap != null) {
-                headIv.setImageBitmap(bitmap);
-            }
+            Glide.with(getActivity())
+                    .load(info.getThumbnail())
+                    .error(R.drawable.defaultcovers)
+                    .into(headIv);
+//            ImageDownLoader loader = BihuApplication.getApp().getImageDownLoaderInstance();
+//            headIv.setTag(info.getThumbnail());
+//            Bitmap bitmap = loader.downLoader(headIv, new ImageDownLoader.ImageLoaderlistener() {
+//                @Override
+//                public void onImageLoader(Bitmap bitmap, ImageView imageView) {
+//                    if (imageView.getTag() != null && imageView.getTag().equals(info.getThumbnail())) {
+//                        imageView.setImageBitmap(bitmap);
+//                    }
+//                }
+//            });
+//            if (bitmap != null) {
+//                headIv.setImageBitmap(bitmap);
+//            }
             titleTv.setText(tMi.getName());
             headTv.setText(tMi.getDescription());
         }

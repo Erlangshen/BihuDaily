@@ -17,14 +17,14 @@ public class BihuApplication extends Application{
         return app;
     }
     /**得到imagedownloader的单例*/
-    public ImageDownLoader getImageDownLoaderInstance(){
-        if (loader==null){
-            loader=new ImageDownLoader(this);
-            return loader;
-        }else{
-            return loader;
-        }
-    }
+//    public ImageDownLoader getImageDownLoaderInstance(){
+//        if (loader==null){
+//            loader=new ImageDownLoader(this);
+//            return loader;
+//        }else{
+//            return loader;
+//        }
+//    }
     public boolean isNightMode() {
         return isNightMode;
     }

@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.lk.bihu.BihuApplication;
 import com.lk.bihu.R;
 import com.lk.bihu.bean.Story;
@@ -20,12 +21,12 @@ import java.util.List;
 public class BihuListAdapter extends BaseAdapter {
     private Context context;
     private List<Story> stories;
-    private ImageDownLoader loader;
+//    private ImageDownLoader loader;
 
     public BihuListAdapter(Context context, List<Story> stories) {
         this.context = context;
         this.stories = stories;
-        loader = BihuApplication.getApp().getImageDownLoaderInstance();
+//        loader = BihuApplication.getApp().getImageDownLoaderInstance();
     }
 
     @Override
@@ -70,40 +71,44 @@ public class BihuListAdapter extends BaseAdapter {
                 }
                 holder.title.setText(story.getTitle());
                 if (story.getImages() != null && story.getImages().size() > 0) {
-                    final String imageUrl = story.getImages().get(0);
-                    holder.image.setTag(imageUrl);
-
-                    if (!TextUtils.isEmpty(imageUrl)) {
-                        holder.image.setVisibility(View.VISIBLE);
-                        holder.image.setImageResource(R.drawable.defaultcovers);
-                        Bitmap bitmap = loader.downLoader(holder.image, new ImageDownLoader.ImageLoaderlistener() {
-
-                            @Override
-                            public void onImageLoader(Bitmap bitmap, ImageView imageView) {
-                                if (imageView.getTag() != null && imageView.getTag().equals(imageUrl)) {
-                                    imageView.setImageBitmap(bitmap);
-                                }
-                            }
-                        });
-                        if (bitmap != null) {
-                            holder.image.setImageBitmap(bitmap);
-                        }
-                    } else {
-                        holder.image.setVisibility(View.GONE);
-                    }
+                    Glide.with(context)
+                            .load(story.getImages().get(0))
+                            .error(R.drawable.defaultcovers)
+                            .into(holder.image);
+//                    final String imageUrl = story.getImages().get(0);
+//                    holder.image.setTag(imageUrl);
+//
+//                    if (!TextUtils.isEmpty(imageUrl)) {
+//                        holder.image.setVisibility(View.VISIBLE);
+//                        holder.image.setImageResource(R.drawable.defaultcovers);
+//                        Bitmap bitmap = loader.downLoader(holder.image, new ImageDownLoader.ImageLoaderlistener() {
+//
+//                            @Override
+//                            public void onImageLoader(Bitmap bitmap, ImageView imageView) {
+//                                if (imageView.getTag() != null && imageView.getTag().equals(imageUrl)) {
+//                                    imageView.setImageBitmap(bitmap);
+//                                }
+//                            }
+//                        });
+//                        if (bitmap != null) {
+//                            holder.image.setImageBitmap(bitmap);
+//                        }
+//                    } else {
+//                        holder.image.setVisibility(View.GONE);
+//                    }
                 } else {
                     holder.image.setVisibility(View.GONE);
                 }
                 break;
             case 1:
-                Holder2 holder2=null;
-                if (convertView==null){
-                    holder2=new Holder2();
-                    convertView=LayoutInflater.from(context).inflate(R.layout.date_str_layout,null);
-                    holder2.dateStr= (TextView) convertView.findViewById(R.id.dateStr);
+                Holder2 holder2 = null;
+                if (convertView == null) {
+                    holder2 = new Holder2();
+                    convertView = LayoutInflater.from(context).inflate(R.layout.date_str_layout, null);
+                    holder2.dateStr = (TextView) convertView.findViewById(R.id.dateStr);
                     convertView.setTag(holder2);
-                }else{
-                    holder2= (Holder2) convertView.getTag();
+                } else {
+                    holder2 = (Holder2) convertView.getTag();
                 }
                 holder2.dateStr.setText(story.getTitle());
                 break;
@@ -115,7 +120,8 @@ public class BihuListAdapter extends BaseAdapter {
         TextView title;
         ImageView image;
     }
-    class Holder2{
+
+    class Holder2 {
         TextView dateStr;
     }
 }

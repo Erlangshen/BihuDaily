@@ -38,11 +38,11 @@ android {
         }
         release {
             //是否混淆
-            minifyEnabled true
+            minifyEnabled false
             //是否zip优化
-            zipAlignEnabled true
+            zipAlignEnabled false
             //删除一些无用的资源
-            shrinkResources true
+            shrinkResources false
             //签名所用的配置文件
 //            signingConfig signingConfig.release
             //混淆所用的文件
@@ -59,4 +59,5 @@ dependencies {
     compile rd.universalimageloader
     compile rd.fastjson
     annotationProcessor rd.butterknifecompiler
+    compile rd.glide
 }

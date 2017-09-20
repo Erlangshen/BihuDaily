@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.lk.bihu.BihuApplication;
 import com.lk.bihu.R;
 import com.lk.bihu.bean.NewsDetail;
@@ -139,7 +140,7 @@ public class DetailFragment extends BaseFragment {
     @Override
     protected void initData() {
         mImageLoaderTools = ImageLoaderTools.getInstance(getActivity());
-        loader = BihuApplication.getApp().getImageDownLoaderInstance();
+//        loader = BihuApplication.getApp().getImageDownLoaderInstance();
         Bundle bundle = getArguments();
         newsDetail = (NewsDetail) bundle.getSerializable("newsDetail");
         MyHandler handler = new MyHandler(DetailFragment.this);
@@ -151,18 +152,22 @@ public class DetailFragment extends BaseFragment {
         ctl.setCollapsedTitleGravity(Gravity.CENTER_HORIZONTAL);
         imageUrl = newsDetail.getImage();
         if (imageUrl != null) {
-            tBar_iv.setTag(imageUrl);
-            Bitmap bitmap = loader.downLoader(tBar_iv, new ImageDownLoader.ImageLoaderlistener() {
-                @Override
-                public void onImageLoader(Bitmap bitmap, ImageView imageView) {
-                    if (imageView.getTag() != null && imageView.getTag().equals(imageUrl)) {
-                        imageView.setImageBitmap(bitmap);
-                    }
-                }
-            });
-            if (bitmap != null) {
-                tBar_iv.setImageBitmap(bitmap);
-            }
+            Glide.with(getActivity())
+                    .load(imageUrl)
+                    .error(R.drawable.defaultcovers)
+                    .into(tBar_iv);
+//            tBar_iv.setTag(imageUrl);
+//            Bitmap bitmap = loader.downLoader(tBar_iv, new ImageDownLoader.ImageLoaderlistener() {
+//                @Override
+//                public void onImageLoader(Bitmap bitmap, ImageView imageView) {
+//                    if (imageView.getTag() != null && imageView.getTag().equals(imageUrl)) {
+//                        imageView.setImageBitmap(bitmap);
+//                    }
+//                }
+//            });
+//            if (bitmap != null) {
+//                tBar_iv.setImageBitmap(bitmap);
+//            }
         } else {
             CoordinatorLayout.LayoutParams params = new CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.MATCH_PARENT, 0);
             appBar.setLayoutParams(params);
