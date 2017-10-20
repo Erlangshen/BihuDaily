@@ -12,10 +12,15 @@ ext {
     dependencies = [
             "appcompatv7"         : 'com.android.support:appcompat-v7:25.1.1',
             "design"              : 'com.android.support:design:25.1.1',
-            "butterknife"         : 'com.jakewharton:butterknife:8.4.0',
-            "butterknifecompiler" : 'com.jakewharton:butterknife-compiler:8.4.0',
             "universalimageloader": 'com.nostra13.universalimageloader:universal-image-loader:1.9.5',
             "fastjson"            : 'com.alibaba:fastjson:1.2.31',
             "glide"               : 'com.github.bumptech.glide:glide:3.6.1',
+            "recyclerviewv7"      : 'com.android.support:recyclerview-v7:25.3.1',
+            "rxjava"              : 'io.reactivex:rxjava:1.1.0',
+            "rxandroid"           : 'io.reactivex:rxandroid:1.1.0',
+            "gson"                : 'com.google.code.gson:gson:2.6.2',
+            "adapterrxjava"       : 'com.squareup.retrofit2:adapter-rxjava:2.0.0-beta4',
+            "convertergson"       : 'com.squareup.retrofit2:converter-gson:2.0.0-beta4',
+            "butterknife"         : 'com.jakewharton:butterknife:7.0.1',
     ]
 }

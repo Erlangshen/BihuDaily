@@ -1,34 +1,28 @@
 package com.lk.bihu.fragment;
 
-import android.graphics.Bitmap;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.lk.bihu.BihuApplication;
 import com.lk.bihu.R;
-import com.lk.bihu.utils.ImageDownLoader;
+
+import butterknife.Bind;
 
 /**
  * 轮询视图
  */
-public class HeadFragment extends BaseFragment{
-    private ImageView image;
-    private String imageUrl="";
-    private ImageDownLoader loader;
+public class HeadFragment extends BaseFragment {
+    private String imageUrl = "";
+    @Bind(R.id.headFragmentImage)
+    ImageView image;
+
     @Override
     protected int getLayoutId() {
         return R.layout.head_fragment;
     }
 
     @Override
-    protected void initView(View v) {
-        image= (ImageView) v.findViewById(R.id.headFragmentImage);
-    }
-
-    @Override
     protected void initData() {
-        imageUrl= getImageUrl();
+        imageUrl = getImageUrl();
         Glide.with(getActivity())
                 .load(imageUrl)
                 .error(R.drawable.defaultcovers)

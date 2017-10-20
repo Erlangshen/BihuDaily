@@ -1,9 +1,6 @@
 package com.lk.bihu.fragment;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,7 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.style.ImageSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,10 +19,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.lk.bihu.BihuApplication;
 import com.lk.bihu.R;
 import com.lk.bihu.bean.NewsDetail;
-import com.lk.bihu.http.HttpClientUtil;
 import com.lk.bihu.http.RequestImageAsyncTask;
 import com.lk.bihu.interfaces.ImageAsyncTaskCallBack;
 import com.lk.bihu.utils.ImageDownLoader;
@@ -38,8 +32,7 @@ import com.lk.bihu.view.ZoomImageView;
 
 import java.lang.ref.WeakReference;
 
-import static android.R.attr.fragment;
-import static android.content.ContentValues.TAG;
+import butterknife.Bind;
 
 
 /**
@@ -47,24 +40,35 @@ import static android.content.ContentValues.TAG;
  */
 public class DetailFragment extends BaseFragment {
     private NewsDetail newsDetail;
-    private CoordinatorLayout cl;
-    private AppBarLayout appBar;
-    private CollapsingToolbarLayout ctl;
-    private ImageView tBar_iv;
-    private TextView tBar_tv, tv_body;
-    private Toolbar toolBar;
     private ImageDownLoader loader;
     private String imageUrl = "";
     private ImageLoaderTools mImageLoaderTools;
-    private ZoomImageView detailIv;
-    private RelativeLayout detailRl;
     private boolean isImageShow = false;
-    private ImageView imageBack;
+    @Bind(R.id.cl)
+    CoordinatorLayout cl;
+    @Bind(R.id.appBar)
+    AppBarLayout appBar;
+    @Bind(R.id.ctl)
+    CollapsingToolbarLayout ctl;
+    @Bind(R.id.tBar_iv)
+    ImageView tBar_iv;
+    @Bind(R.id.tBar_tv)
+    TextView tBar_tv;
+    @Bind(R.id.toolBar)
+    Toolbar toolBar;
+    @Bind(R.id.tv_body)
+    TextView tv_body;
+    @Bind(R.id.detailIv)
+    ZoomImageView detailIv;
+    @Bind(R.id.detailRl)
+    RelativeLayout detailRl;
+    @Bind(R.id.imageBack)
+    ImageView imageBack;
 
-    private static class MyHandler extends Handler{
+    private static class MyHandler extends Handler {
         WeakReference<DetailFragment> mWeakReference;
 
-        public MyHandler(DetailFragment fragment){
+        public MyHandler(DetailFragment fragment) {
             mWeakReference = new WeakReference<DetailFragment>(fragment);
         }
 
@@ -85,7 +89,7 @@ public class DetailFragment extends BaseFragment {
                             if (!mWeakReference.get().isImageShow())
                                 mWeakReference.get().loadImage(imageSource);
                         } else {
-                             mWeakReference.get().setIsImageShow(false);
+                            mWeakReference.get().setIsImageShow(false);
                         }
                     }
                 }
@@ -93,13 +97,13 @@ public class DetailFragment extends BaseFragment {
         }
     }
 
-    public void setIsImageShow(boolean isImageShow){
-        this.isImageShow = isImageShow ;
+    public void setIsImageShow(boolean isImageShow) {
+        this.isImageShow = isImageShow;
         showToast("加载图片出错");
     }
 
-    public boolean isImageShow(){
-        return isImageShow ;
+    public boolean isImageShow() {
+        return isImageShow;
     }
 
     public void loadImage(final String imageSource) {
@@ -110,7 +114,7 @@ public class DetailFragment extends BaseFragment {
                     detailIv.setImage(bm);
                 }
             }).execute();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -121,20 +125,6 @@ public class DetailFragment extends BaseFragment {
     @Override
     protected int getLayoutId() {
         return R.layout.detail_fragment_layout;
-    }
-
-    @Override
-    protected void initView(View v) {
-        cl = (CoordinatorLayout) v.findViewById(R.id.cl);
-        appBar = (AppBarLayout) v.findViewById(R.id.appBar);
-        ctl = (CollapsingToolbarLayout) v.findViewById(R.id.ctl);
-        tBar_iv = (ImageView) v.findViewById(R.id.tBar_iv);
-        tBar_tv = (TextView) v.findViewById(R.id.tBar_tv);
-        toolBar = (Toolbar) v.findViewById(R.id.toolBar);
-        tv_body = (TextView) v.findViewById(R.id.tv_body);
-        detailIv = (ZoomImageView) v.findViewById(R.id.detailIv);
-        detailRl = (RelativeLayout) v.findViewById(R.id.detailRl);
-        imageBack= (ImageView) v.findViewById(R.id.imageBack);
     }
 
     @Override
@@ -195,9 +185,9 @@ public class DetailFragment extends BaseFragment {
         imageBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isImageShow){
+                if (isImageShow) {
                     detailRl.setVisibility(View.GONE);
-                    isImageShow=false;
+                    isImageShow = false;
                 }
             }
         });
@@ -206,6 +196,6 @@ public class DetailFragment extends BaseFragment {
     @Override
     public void onStop() {
         super.onStop();
-        isImageShow=false;
+        isImageShow = false;
     }
 }

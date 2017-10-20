@@ -3,7 +3,6 @@ package com.lk.bihu.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -13,16 +12,20 @@ import android.widget.RelativeLayout;
 
 import com.lk.bihu.R;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
-public class LoadingActivity extends Activity{
-    private RelativeLayout loading;
+
+public class LoadingActivity extends Activity {
+    @Bind(R.id.loading)
+    RelativeLayout loading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
-        initView();
+        ButterKnife.bind(this);
         initData();
     }
 
@@ -30,13 +33,9 @@ public class LoadingActivity extends Activity{
         return R.layout.loading_layout;
     }
 
-    protected void initView() {
-        loading = (RelativeLayout) findViewById(R.id.loading);
-    }
-
     protected void initData() {
         AnimationSet set1 = new AnimationSet(true);
-        final  AnimationSet set2 = new AnimationSet(true);
+        final AnimationSet set2 = new AnimationSet(true);
         ScaleAnimation scale = new ScaleAnimation(1.0f, 1.4f, 1.0f, 1.4f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         AlphaAnimation alpha = new AlphaAnimation(1, 0);
         alpha.setDuration(1000);

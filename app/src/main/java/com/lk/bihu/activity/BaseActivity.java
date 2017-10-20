@@ -40,7 +40,6 @@ public abstract class BaseActivity extends FragmentActivity {
         }
         setContentView(getLayoutId());
         ButterKnife.bind(this);
-        initView();
         initData();
     }
 
@@ -102,11 +101,6 @@ public abstract class BaseActivity extends FragmentActivity {
     protected abstract int getLayoutId();
 
     /**
-     * 初始化控件
-     */
-    protected abstract void initView();
-
-    /**
      * 逻辑代码
      */
     protected abstract void initData();
@@ -117,6 +111,7 @@ public abstract class BaseActivity extends FragmentActivity {
     protected void showShortToast(String text) {
         Toast.makeText(BaseActivity.this, text, Toast.LENGTH_SHORT).show();
     }
+
     /**
      * dp转成px
      */

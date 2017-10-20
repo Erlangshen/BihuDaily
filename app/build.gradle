@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.jakewharton.butterknife'
 
 def ra = rootProject.ext.android
 def rd = rootProject.ext.dependencies
@@ -58,6 +57,11 @@ dependencies {
     compile rd.butterknife
     compile rd.universalimageloader
     compile rd.fastjson
-    annotationProcessor rd.butterknifecompiler
     compile rd.glide
+    compile rd.recyclerviewv7
+    compile rd.rxjava
+    compile rd.rxandroid
+    compile rd.gson
+    compile rd.adapterrxjava
+    compile rd.convertergson
 }

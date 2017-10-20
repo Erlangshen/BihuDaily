@@ -1,7 +1,6 @@
 package com.lk.bihu.fragment;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewConfigurationCompat;
@@ -19,7 +18,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.lk.bihu.BihuApplication;
 import com.lk.bihu.R;
 import com.lk.bihu.activity.NewsDetailsActivity;
 import com.lk.bihu.adapter.BihuListAdapter;
@@ -35,7 +33,6 @@ import com.lk.bihu.interfaces.AsyncTaskCallBack;
 import com.lk.bihu.interfaces.OnLoadListener;
 import com.lk.bihu.interfaces.TimerCallBack;
 import com.lk.bihu.utils.DateUtils;
-import com.lk.bihu.utils.ImageDownLoader;
 import com.lk.bihu.view.SwipeRefreshView;
 
 import org.json.JSONException;
@@ -46,11 +43,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static android.R.attr.x;
+import butterknife.Bind;
 
 public class ContentFragment extends BaseFragment implements TimerCallBack {
-    private SwipeRefreshView swipeRefreshLayout;
-    private ListView homeDataListView;//首页listview
     private List<TopStory> topStories;//首页广告
     private List<Story> homeStories;//首页列表
     private BihuListAdapter bihuAdapter = null;//列表adapter
@@ -78,16 +73,14 @@ public class ContentFragment extends BaseFragment implements TimerCallBack {
     private ThemeMainInfo info;
     private String date;//日期
     private int mTouchSlop;//viewpager滑动距离临界值
+    @Bind(R.id.contentList)
+    ListView homeDataListView;//首页listview
+    @Bind(R.id.swipeLayout)
+    SwipeRefreshView swipeRefreshLayout;
 
     @Override
     protected int getLayoutId() {
         return R.layout.content_fragment;
-    }
-
-    @Override
-    protected void initView(View v) {
-        homeDataListView = (ListView) v.findViewById(R.id.contentList);
-        swipeRefreshLayout = (SwipeRefreshView) v.findViewById(R.id.swipeLayout);
     }
 
     @Override
@@ -130,13 +123,13 @@ public class ContentFragment extends BaseFragment implements TimerCallBack {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
                     Story story = (Story) parent.getAdapter().getItem(position);
-                    if (story!=null&&!story.isDateStr()) {
+                    if (story != null && !story.isDateStr()) {
                         Intent intent = new Intent();
                         intent.setClass(getActivity(), NewsDetailsActivity.class);
                         intent.putExtra("story_id", story.getId());
                         startActivityForResult(intent, 222);
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

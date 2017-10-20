@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -20,7 +19,6 @@ import com.lk.bihu.bean.AllThemeMainInfo;
 import com.lk.bihu.bean.ThemeMainInfo;
 import com.lk.bihu.constant.Constant;
 import com.lk.bihu.fragment.ContentFragment;
-import com.lk.bihu.fragment.HeadFragment;
 import com.lk.bihu.http.RequestAsyncTask;
 import com.lk.bihu.interfaces.AsyncTaskCallBack;
 import com.lk.bihu.interfaces.MenuItemClickListener;
@@ -29,14 +27,10 @@ import com.lk.bihu.utils.SPUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
+import butterknife.Bind;
 import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity {
-    private Button menu;
-    private ListView menuList;//侧滑菜单
-    private DrawerLayout drawerLayout;
-    private LinearLayout menuLinear;
     private List<ThemeMainInfo> others;
     private MenuAdapter mAdapter;
     private FragmentManager manager;
@@ -44,19 +38,20 @@ public class MainActivity extends BaseActivity {
     private boolean flag = true;//没有添加其他页面-true；添加除首页之外的任何其他页面-false
     private List<Fragment> delList;
     private ContentFragment cacheFragment;//判断当前页面的fragment和将要添加的fragment是否为同一个
-    private boolean isNight=false;
+    private boolean isNight = false;
+    @Bind(R.id.menu)
+    Button menu;
+    @Bind(R.id.menuList)
+    ListView menuList;//侧滑菜单
+    @Bind(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
+    @Bind(R.id.menuLinear)
+    LinearLayout menuLinear;
+
 
     @Override
     protected int getLayoutId() {
         return R.layout.activity_main;
-    }
-
-    @Override
-    protected void initView() {
-        menu = (Button) findViewById(R.id.menu);
-        menuList = (ListView) findViewById(R.id.menuList);
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        menuLinear = (LinearLayout) findViewById(R.id.menuLinear);
     }
 
     @Override
@@ -76,12 +71,12 @@ public class MainActivity extends BaseActivity {
     }
 
     @OnClick(R.id.nightLinear)
-    void night(){
+    void night() {
         if (isNight)
             ChangeToDay();
         else
             ChangeToNight();
-        isNight=!isNight;
+        isNight = !isNight;
     }
 
     /**
