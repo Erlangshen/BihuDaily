@@ -1,8 +1,6 @@
 package com.lk.bihu.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,22 +9,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.lk.bihu.BihuApplication;
 import com.lk.bihu.R;
 import com.lk.bihu.bean.Story;
-import com.lk.bihu.utils.ImageDownLoader;
 
 import java.util.List;
 
 public class BihuListAdapter extends BaseAdapter {
     private Context context;
     private List<Story> stories;
-//    private ImageDownLoader loader;
 
     public BihuListAdapter(Context context, List<Story> stories) {
         this.context = context;
         this.stories = stories;
-//        loader = BihuApplication.getApp().getImageDownLoaderInstance();
     }
 
     @Override
@@ -75,27 +69,6 @@ public class BihuListAdapter extends BaseAdapter {
                             .load(story.getImages().get(0))
                             .error(R.drawable.defaultcovers)
                             .into(holder.image);
-//                    final String imageUrl = story.getImages().get(0);
-//                    holder.image.setTag(imageUrl);
-//
-//                    if (!TextUtils.isEmpty(imageUrl)) {
-//                        holder.image.setVisibility(View.VISIBLE);
-//                        holder.image.setImageResource(R.drawable.defaultcovers);
-//                        Bitmap bitmap = loader.downLoader(holder.image, new ImageDownLoader.ImageLoaderlistener() {
-//
-//                            @Override
-//                            public void onImageLoader(Bitmap bitmap, ImageView imageView) {
-//                                if (imageView.getTag() != null && imageView.getTag().equals(imageUrl)) {
-//                                    imageView.setImageBitmap(bitmap);
-//                                }
-//                            }
-//                        });
-//                        if (bitmap != null) {
-//                            holder.image.setImageBitmap(bitmap);
-//                        }
-//                    } else {
-//                        holder.image.setVisibility(View.GONE);
-//                    }
                 } else {
                     holder.image.setVisibility(View.GONE);
                 }

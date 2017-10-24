@@ -15,4 +15,5 @@ public class Constant {
     /**过往新闻，后面加日期 20160502请求的是20160501的新闻*/
     public static final String BEFORE_NEWS_PATH="http://news.at.zhihu.com/api/4/news/before/";
 
+    public static final String BASE_URL="http://news-at.zhihu.com/api/4/";
 }

@@ -6,21 +6,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import com.alibaba.fastjson.JSONObject;
 import com.lk.bihu.R;
 import com.lk.bihu.adapter.MenuAdapter;
 import com.lk.bihu.bean.AllThemeMainInfo;
 import com.lk.bihu.bean.ThemeMainInfo;
-import com.lk.bihu.constant.Constant;
 import com.lk.bihu.fragment.ContentFragment;
-import com.lk.bihu.http.RequestAsyncTask;
-import com.lk.bihu.interfaces.AsyncTaskCallBack;
+import com.lk.bihu.http.HTTPMethods;
+import com.lk.bihu.http.MySubscriber;
+import com.lk.bihu.http.SubscriberListener;
 import com.lk.bihu.interfaces.MenuItemClickListener;
 import com.lk.bihu.utils.SPUtils;
 
@@ -159,29 +157,21 @@ public class MainActivity extends BaseActivity {
             }
         });
         menuList.setAdapter(mAdapter);
-        new RequestAsyncTask(MainActivity.this, Constant.MENU_URL, new AsyncTaskCallBack() {
-            @Override
-            public void post(String rest) {
-                if (!TextUtils.isEmpty(rest)) {
-                    try {
-                        AllThemeMainInfo all = JSONObject.parseObject(rest.toString(), AllThemeMainInfo.class);
-                        others.clear();
-                        ThemeMainInfo info = new ThemeMainInfo();
-                        info.setName("首页");
-                        info.setId(-1);
-                        others.add(info);
-                        others.addAll(all.getOthers());
-                        SPUtils.setMenuList(MainActivity.this, others);
-                        mAdapter.notifyDataSetChanged();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    showShortToast("网络错误");
-                }
+        SubscriberListener listener=new SubscriberListener<AllThemeMainInfo>(){
 
+            @Override
+            public void onNext(AllThemeMainInfo all) {
+                others.clear();
+                ThemeMainInfo info = new ThemeMainInfo();
+                info.setName("首页");
+                info.setId(-1);
+                others.add(info);
+                others.addAll(all.getOthers());
+                SPUtils.setMenuList(MainActivity.this, others);
+                mAdapter.notifyDataSetChanged();
             }
-        }).execute();
+        };
+        HTTPMethods.getInstance().getMenu(new MySubscriber<AllThemeMainInfo>(listener,MainActivity.this));
     }
 
     /**

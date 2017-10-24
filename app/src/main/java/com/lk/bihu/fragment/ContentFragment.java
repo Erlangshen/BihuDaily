@@ -6,7 +6,6 @@ import android.os.Message;
 import android.support.v4.view.ViewConfigurationCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,16 +26,13 @@ import com.lk.bihu.bean.BihuMenu;
 import com.lk.bihu.bean.Story;
 import com.lk.bihu.bean.ThemeMainInfo;
 import com.lk.bihu.bean.TopStory;
-import com.lk.bihu.constant.Constant;
-import com.lk.bihu.http.RequestAsyncTask;
-import com.lk.bihu.interfaces.AsyncTaskCallBack;
+import com.lk.bihu.http.HTTPMethods;
+import com.lk.bihu.http.MySubscriber;
+import com.lk.bihu.http.SubscriberListener;
 import com.lk.bihu.interfaces.OnLoadListener;
 import com.lk.bihu.interfaces.TimerCallBack;
 import com.lk.bihu.utils.DateUtils;
 import com.lk.bihu.view.SwipeRefreshView;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -150,82 +146,62 @@ public class ContentFragment extends BaseFragment implements TimerCallBack {
         int id = info.getId();
         if (-1 == id) {
             if (isLoadMore == 0) {
-                new RequestAsyncTask(getActivity(), Constant.HOME_URL, new AsyncTaskCallBack() {
+                SubscriberListener listener = new SubscriberListener<BihuMenu>() {
                     @Override
-                    public void post(String rest) {
-                        if (swipeRefreshLayout.isRefreshing())
-                            swipeRefreshLayout.setRefreshing(false);
-                        if (!TextUtils.isEmpty(rest)) {
-                            try {
-                                JSONObject object = new JSONObject(rest);
-                                BihuMenu data = com.alibaba.fastjson.JSONObject.parseObject(object.toString(), BihuMenu.class);
-                                if (DateUtils.getSysTime2().equals(data.getDate())) {
-                                    topStories.clear();
-                                    topStories.addAll(data.getTop_stories());
-                                    if (topStories.size() > 1) {
-                                        headLinear.setVisibility(View.VISIBLE);
-                                        getHeadView(null);
-                                    } else {
-                                        headLinear.setVisibility(View.GONE);
-                                    }
-                                    homeStories.clear();
-                                    homeStories.addAll(data.getStories());
-                                    bihuAdapter.notifyDataSetChanged();
-                                } else {
-                                    showToast("请求数据失败");
-                                }
-                                swipeRefreshLayout.setRefreshing(false);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            showToast("网络错误");
-                        }
-                    }
-                }).execute();
-            } else {
-                new RequestAsyncTask(getActivity(), Constant.BEFORE_NEWS_PATH + date, new AsyncTaskCallBack() {
-                    @Override
-                    public void post(String rest) {
-                        try {
-                            JSONObject object = new JSONObject(rest);
-                            BihuMenu data = com.alibaba.fastjson.JSONObject.parseObject(object.toString(), BihuMenu.class);
-                            if (DateUtils.getBeforeDay(date).equals(data.getDate())) {
-                                Story story = new Story();
-                                story.setDateStr(true);
-                                story.setTitle(DateUtils.getDateStr(DateUtils.getBeforeDay(date)));
-                                homeStories.add(story);
-                                homeStories.addAll(data.getStories());
-                                bihuAdapter.notifyDataSetChanged();
-                                date = DateUtils.getBeforeDay(date);
+                    public void onNext(BihuMenu bihuMenu) {
+                        if (DateUtils.getSysTime2().equals(bihuMenu.getDate())) {
+                            topStories.clear();
+                            topStories.addAll(bihuMenu.getTop_stories());
+                            if (topStories.size() > 1) {
+                                headLinear.setVisibility(View.VISIBLE);
+                                getHeadView(null);
                             } else {
-                                showToast("请求数据失败");
+                                headLinear.setVisibility(View.GONE);
                             }
-                            swipeRefreshLayout.setLoading(false);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            homeStories.clear();
+                            homeStories.addAll(bihuMenu.getStories());
+                            bihuAdapter.notifyDataSetChanged();
+                        } else {
+                            showToast("请求数据失败");
                         }
+                        swipeRefreshLayout.setRefreshing(false);
                     }
-                }).execute();
+                };
+                HTTPMethods.getInstance().getHomeData(new MySubscriber<BihuMenu>(listener, getActivity()), "latest");
+            } else {
+                SubscriberListener listener = new SubscriberListener<BihuMenu>() {
+                    @Override
+                    public void onNext(BihuMenu bihuMenu) {
+                        if (DateUtils.getBeforeDay(date).equals(bihuMenu.getDate())) {
+                            Story story = new Story();
+                            story.setDateStr(true);
+                            story.setTitle(DateUtils.getDateStr(DateUtils.getBeforeDay(date)));
+                            homeStories.add(story);
+                            homeStories.addAll(bihuMenu.getStories());
+                            bihuAdapter.notifyDataSetChanged();
+                            date = DateUtils.getBeforeDay(date);
+                        } else {
+                            showToast("请求数据失败");
+                        }
+                        swipeRefreshLayout.setLoading(false);
+                    }
+                };
+                HTTPMethods.getInstance().getBeforeData(new MySubscriber<BihuMenu>(listener, getActivity()), date);
             }
         } else {
-            new RequestAsyncTask(getActivity(), Constant.NEWSLIST_URL + id, new AsyncTaskCallBack() {
+            SubscriberListener listener = new SubscriberListener<BihuContent>() {
                 @Override
-                public void post(String rest) {
+                public void onNext(BihuContent bihuContent) {
                     if (swipeRefreshLayout.isRefreshing())
                         swipeRefreshLayout.setRefreshing(false);
-                    if (!TextUtils.isEmpty(rest)) {
-                        BihuContent content = com.alibaba.fastjson.JSONObject.parseObject(rest.toString(), BihuContent.class);
-                        homeStories.clear();
-                        homeStories.addAll(content.getStories());
-                        bihuAdapter.notifyDataSetChanged();
-                        getHeadView(info);
-                    } else {
-                        showToast("网络错误");
-                    }
+                    homeStories.clear();
+                    homeStories.addAll(bihuContent.getStories());
+                    bihuAdapter.notifyDataSetChanged();
+                    getHeadView(info);
                     swipeRefreshLayout.setRefreshing(false);
                 }
-            }).execute();
+            };
+            HTTPMethods.getInstance().getContent(new MySubscriber<BihuContent>(listener,getActivity()),id);
         }
     }
 

@@ -3,17 +3,16 @@ package com.lk.bihu.activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONObject;
 import com.lk.bihu.R;
 import com.lk.bihu.bean.NewsDetail;
 import com.lk.bihu.constant.Constant;
 import com.lk.bihu.fragment.DetailFragment;
-import com.lk.bihu.http.RequestAsyncTask;
-import com.lk.bihu.interfaces.AsyncTaskCallBack;
+import com.lk.bihu.http.HTTPMethods;
+import com.lk.bihu.http.MySubscriber;
+import com.lk.bihu.http.SubscriberListener;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -24,9 +23,9 @@ import static com.lk.bihu.R.id.details_ll;
  * 新闻详情
  */
 public class NewsDetailsActivity extends BaseActivity {
-    private String url;
-    private NewsDetail newsDetail;
     private FragmentTransaction transaction;
+    private int storyId;
+
     @Bind(R.id.backIv)
     ImageView backIv;
     @Bind(R.id.nextIv)
@@ -49,33 +48,23 @@ public class NewsDetailsActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        int storyId = getIntent().getIntExtra("story_id", 0);
-        url = Constant.DETAILS_URL + storyId;
+        storyId = getIntent().getIntExtra("story_id", 0);
         FragmentManager manager = getSupportFragmentManager();
         transaction = manager.beginTransaction();
-        requestData(url);
-    }
 
-    /**
-     * 请求网络数据
-     */
-    private void requestData(String url) {
-        new RequestAsyncTask(NewsDetailsActivity.this, url, "数据加载中...", new AsyncTaskCallBack() {
+        SubscriberListener listener=new SubscriberListener<NewsDetail>(){
+
             @Override
-            public void post(String rest) {
-                if (!TextUtils.isEmpty(rest)) {
-                    newsDetail = JSONObject.parseObject(rest.toString(), NewsDetail.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("newsDetail", newsDetail);
-                    DetailFragment dFragment = new DetailFragment();
-                    dFragment.setArguments(bundle);
-                    transaction.replace(details_ll, dFragment);
-                    transaction.commitAllowingStateLoss();
-                } else {
-                    showShortToast("网络错误，请检查网络！");
-                }
+            public void onNext(NewsDetail newsDetail) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("newsDetail", newsDetail);
+                DetailFragment dFragment = new DetailFragment();
+                dFragment.setArguments(bundle);
+                transaction.replace(details_ll, dFragment);
+                transaction.commitAllowingStateLoss();
             }
-        }).execute();
+        };
+        HTTPMethods.getInstance().getDetails(new MySubscriber(listener,NewsDetailsActivity.this),storyId);
     }
 
     @OnClick(R.id.backIv)

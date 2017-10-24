@@ -6,4 +6,6 @@
     <string name="setting_str">设置</string>
     <string name="download_str">下载</string>
     <string name="night_str">夜间</string>
+    <string name="net_error_text">请求数据失败!</string>
+    <string name="request_data_waiting">正在请求数据...</string>
 </resources>
