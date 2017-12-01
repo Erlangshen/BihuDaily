@@ -5,8 +5,10 @@ import com.lk.bihu.bean.BihuContent;
 import com.lk.bihu.bean.BihuMenu;
 import com.lk.bihu.bean.NewsDetail;
 
+import okhttp3.ResponseBody;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -28,4 +30,7 @@ public interface BihuService {
 
     @GET("theme/{id}")
     Observable<BihuContent> getContent(@Path("id") int id);
+
+    @GET
+    Observable<ResponseBody> loadImage(@Url String url);
 }

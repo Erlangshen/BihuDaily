@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.style.ImageSpan;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,7 +22,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.lk.bihu.R;
 import com.lk.bihu.bean.NewsDetail;
+import com.lk.bihu.http.HTTPMethods;
+import com.lk.bihu.http.MySubscriber;
 import com.lk.bihu.http.RequestImageAsyncTask;
+import com.lk.bihu.http.SubscriberListener;
 import com.lk.bihu.interfaces.ImageAsyncTaskCallBack;
 import com.lk.bihu.utils.ImageDownLoader;
 import com.lk.bihu.utils.ImageLoaderTools;
@@ -33,6 +37,7 @@ import com.lk.bihu.view.ZoomImageView;
 import java.lang.ref.WeakReference;
 
 import butterknife.Bind;
+import retrofit2.Retrofit;
 
 
 /**
@@ -106,17 +111,24 @@ public class DetailFragment extends BaseFragment {
         return isImageShow;
     }
 
-    public void loadImage(final String imageSource) {
-        try {
-            new RequestImageAsyncTask(getActivity(), imageSource, "正在加载大图...", new ImageAsyncTaskCallBack() {
-                @Override
-                public void callBack(Bitmap bm) {
-                    detailIv.setImage(bm);
-                }
-            }).execute();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void loadImage(String imageSource) {
+//        try {
+//            new RequestImageAsyncTask(getActivity(), imageSource, "正在加载大图...", new ImageAsyncTaskCallBack() {
+//                @Override
+//                public void callBack(Bitmap bm) {
+//                    detailIv.setImage(bm);
+//                }
+//            }).execute();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+        SubscriberListener listener = new SubscriberListener<Bitmap>() {
+            @Override
+            public void onNext(Bitmap bitmap) {
+                detailIv.setImage(bitmap);
+            }
+        };
+        HTTPMethods.getInstance().loadImage(new MySubscriber<Bitmap>(listener, getActivity()), imageSource);
 
         detailRl.setVisibility(View.VISIBLE);
         isImageShow = true;
@@ -164,24 +176,31 @@ public class DetailFragment extends BaseFragment {
         }
         tBar_tv.setText(newsDetail.getImage_source());
 
+        final GestureDetector mDector = new GestureDetector(getActivity(), new MyGestureListener());
         tv_body.setOnTouchListener(new View.OnTouchListener() {
             float xDiff = 0.0f;
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        xDiff = event.getX();
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        xDiff = event.getX() - xDiff;
-                        if (xDiff > dip2px(30))
-                            getActivity().finish();
-                        break;
-                }
-                return false;
+//                switch (event.getAction()) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        xDiff = event.getX();
+//                        break;
+//                    case MotionEvent.ACTION_UP:
+//                        xDiff = event.getX() - xDiff;
+//                        if (xDiff > dip2px(30))
+//                            getActivity().finish();
+//                        break;
+//                }
+//                return false;
+                mDector.onTouchEvent(event);
+                return true;
             }
         });
+        tv_body.setFocusable(true);
+        tv_body.setClickable(true);
+        tv_body.setLongClickable(true);
+
         imageBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -197,5 +216,14 @@ public class DetailFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         isImageShow = false;
+    }
+
+    class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            if (e2.getX() - e1.getX() > dip2px(20) && velocityX > 200)
+                getActivity().finish();
+            return true;
+        }
     }
 }

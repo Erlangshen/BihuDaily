@@ -313,19 +313,6 @@ public class ContentFragment extends BaseFragment implements TimerCallBack {
                     .load(info.getThumbnail())
                     .error(R.drawable.defaultcovers)
                     .into(headIv);
-//            ImageDownLoader loader = BihuApplication.getApp().getImageDownLoaderInstance();
-//            headIv.setTag(info.getThumbnail());
-//            Bitmap bitmap = loader.downLoader(headIv, new ImageDownLoader.ImageLoaderlistener() {
-//                @Override
-//                public void onImageLoader(Bitmap bitmap, ImageView imageView) {
-//                    if (imageView.getTag() != null && imageView.getTag().equals(info.getThumbnail())) {
-//                        imageView.setImageBitmap(bitmap);
-//                    }
-//                }
-//            });
-//            if (bitmap != null) {
-//                headIv.setImageBitmap(bitmap);
-//            }
             titleTv.setText(tMi.getName());
             headTv.setText(tMi.getDescription());
         }
