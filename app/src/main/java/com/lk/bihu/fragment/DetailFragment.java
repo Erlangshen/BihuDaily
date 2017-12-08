@@ -49,6 +49,7 @@ public class DetailFragment extends BaseFragment {
     private String imageUrl = "";
     private ImageLoaderTools mImageLoaderTools;
     private boolean isImageShow = false;
+    private GestureDetector mDector;
     @Bind(R.id.cl)
     CoordinatorLayout cl;
     @Bind(R.id.appBar)
@@ -176,7 +177,7 @@ public class DetailFragment extends BaseFragment {
         }
         tBar_tv.setText(newsDetail.getImage_source());
 
-        final GestureDetector mDector = new GestureDetector(getActivity(), new MyGestureListener());
+        mDector = new GestureDetector(getActivity(), new MyGestureListener());
         tv_body.setOnTouchListener(new View.OnTouchListener() {
             float xDiff = 0.0f;
 
