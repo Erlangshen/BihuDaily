@@ -5,7 +5,6 @@ def rd = rootProject.ext.dependencies
 
 android {
     compileSdkVersion ra.compileSdkVersion
-    buildToolsVersion ra.buildToolsVersion
     useLibrary ra.useLibrary
 
     defaultConfig {
@@ -14,6 +13,7 @@ android {
         targetSdkVersion ra.targetSdkVersion
         versionCode ra.versionCode
         versionName ra.versionName
+        javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
     }
     signingConfigs {
         debug {
@@ -35,6 +35,10 @@ android {
             shrinkResources false
 //            signingConfig signingConfig.debug
         }
+        beta {
+            //关键代码，release， debug为library中已有buildType
+            matchingFallbacks = ['release', 'debug']
+        }
         release {
             //是否混淆
             minifyEnabled false
@@ -48,20 +52,21 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    buildToolsVersion '27.0.3'
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile rd.appcompatv7
-    compile rd.design
-    compile rd.butterknife
-    compile rd.universalimageloader
-    compile rd.fastjson
-    compile rd.glide
-    compile rd.recyclerviewv7
-    compile rd.rxjava
-    compile rd.rxandroid
-    compile rd.gson
-    compile rd.adapterrxjava
-    compile rd.convertergson
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation rd.appcompatv7
+    implementation rd.design
+    implementation rd.butterknife
+    implementation rd.universalimageloader
+    implementation rd.fastjson
+    implementation rd.glide
+    implementation rd.recyclerviewv7
+    implementation rd.rxjava
+    implementation rd.rxandroid
+    implementation rd.gson
+    implementation rd.adapterrxjava
+    implementation rd.convertergson
 }
