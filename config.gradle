@@ -1,7 +1,7 @@
 ext {
     android = [
             compileSdkVersion: 25,
-            buildToolsVersion: "25.0.2",
+            buildToolsVersion: "27.0.3",
             useLibrary       : 'org.apache.http.legacy',
             applicationId    : "com.lk.bihu",
             minSdkVersion    : 14,

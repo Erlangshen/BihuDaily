@@ -239,6 +239,8 @@ public class ContentFragment extends BaseFragment implements TimerCallBack {
                 params.leftMargin = dip2px(8);
                 image.setLayoutParams(params);
                 image.setImageResource(R.drawable.page);
+                if (i==0)
+                    image.setImageResource(R.drawable.page_now);
                 headLinear.addView(image);
 
                 HeadFragment hFragment = new HeadFragment();
