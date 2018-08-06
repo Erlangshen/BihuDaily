@@ -14,6 +14,7 @@ android {
         targetSdkVersion ra.targetSdkVersion
         versionCode ra.versionCode
         versionName ra.versionName
+        javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
     }
     signingConfigs {
         debug {
@@ -34,6 +35,10 @@ android {
             zipAlignEnabled false
             shrinkResources false
 //            signingConfig signingConfig.debug
+        }
+        beta {
+            //关键代码，release， debug为library中已有buildType
+            matchingFallbacks = ['release', 'debug']
         }
         release {
             //是否混淆
